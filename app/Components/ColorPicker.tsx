@@ -30,7 +30,7 @@ export default function ColorPicker() {
     const [colors, setColors] = useState<ColorPicker[]>([]);
 
     return (
-        <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+        <div className="flex flex-col flex-1 items-center bg-zinc-50 font-sans dark:bg-black">
             <div className="flex flex-col">
                 <button className="border-[2px] rounded-md px-[5px] shadow-md" onClick={()=>modifyColors("add")}>Add Color</button>
                 <button className="border-[2px] rounded-md px-[5px] shadow-md" onClick={()=>modifyColors("subtract")}>Remove Color</button>

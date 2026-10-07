@@ -10,16 +10,18 @@ export default function GradientSelect() {
     }
 
     return (
-        <fieldset onChange={() => changeGradientType}>
-            <label>
-                <input type="radio" name="gradientType" value="linear"/> Linear
-            </label>
-            <label>
-                <input type="radio" name="gradientType" value="radial"/> Radial
-            </label>
-            <label>
-                <input type="radio" name="gradientType" value="conic"/> Conic
-            </label>
-        </fieldset>
+        <div>
+            <fieldset onChange={() => changeGradientType}>
+                <label>
+                    <input type="radio" name="gradientType" value="linear"/> Linear
+                </label>
+                <label>
+                    <input type="radio" name="gradientType" value="radial"/> Radial
+                </label>
+                <label>
+                    <input type="radio" name="gradientType" value="conic"/> Conic
+                </label>
+            </fieldset>
+        </div>
     )
 }
