@@ -7,11 +7,6 @@ export default function ColorPicker() {
 
     const gradient = use(GradientContext);
 
-    interface Color {
-        id: number;
-        color: string;
-    }
-
     const modifyColors = (event: React.ChangeEvent<HTMLInputElement>) => {
         gradient.updateGradientColors(parseInt(event.currentTarget.id), event.currentTarget.value);
     }
@@ -24,7 +19,8 @@ export default function ColorPicker() {
     }
 
     const addColors = () => {
-        gradient.addColors(gradient.gradient.colors.length, "#fc7c03");
+        let newColor = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+        gradient.addColors(gradient.gradient.colors.length, newColor);
     }
 
     const subtractColors = () => {

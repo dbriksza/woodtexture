@@ -16,7 +16,7 @@ export default function DirectionSelect() {
 
     const [xy, setXY] = useState<XY>({x: 100, y: 0});
 
-    const [angle, setAngle] = useState<number>(90);
+    const [angle, setAngle] = useState<number>(0);
 
     const customAngleRef = useRef<HTMLInputElement>(null);
 
@@ -86,7 +86,7 @@ export default function DirectionSelect() {
                 <label className="absolute right-[105%] top-[calc(50%-10px)] h-[10px] text-right">
                     <input type="radio" name="angle" value="left" onChange={changeDirectionRadio}/> Left
                 </label>
-                <input ref={customAngleRef} className="" type="radio" name="angle" value="customAngle" onChange={changeDirectionRadio}/>
+                <input ref={customAngleRef} className="hidden" type="radio" name="angle" value="customAngle" onChange={changeDirectionRadio}/>
             </fieldset>
             <br></br>
             <span className="block max-w-[100px] w-[100px]">Angle: {angle}</span>
