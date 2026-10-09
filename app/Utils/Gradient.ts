@@ -3,6 +3,7 @@ interface Gradient {
     colors: Color[];
     angle: string;
     shape: string;
+    size: string;
     position: string;
     interpolationMethod: string;
     repeating: boolean;

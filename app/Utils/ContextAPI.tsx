@@ -26,20 +26,30 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
     colors: [{color: "#f58224", index: 0}],
     angle: "0",
     shape: "",
+    size: "",
     position: "",
-    interpolationMethod: "",
+    interpolationMethod: "in srgb",
     repeating: false,
     startList: [{start: "0", index: 0}],
     stopList: [{stop: "10", index: 0}]
   });
 
   useEffect(() => {
-        let constructedStyle = [];
+    let constructedStyle = [];
     switch(gradient.type){
         case "linear":
-            constructedStyle[1] = "linear-gradient("
-    }
-    constructedStyle[2] = gradient.angle + "rad,";
+            constructedStyle.push("linear-gradient(");
+            constructedStyle.push(gradient.angle + "rad ");
+            break;
+          case "radial":
+            constructedStyle.push("radial-gradient(");
+            constructedStyle.push(gradient.shape + "rad," + gradient.size === "" ? "farthest-corner, " : gradient.size + " ");
+            break;
+          case "conic":
+            constructedStyle.push("conic-gradient(");
+            break;
+    };
+    constructedStyle.push(gradient.interpolationMethod + ",");
     let colorsAndStops = [];
     for(let i = 0; i < gradient.colors.length; i++){
         colorsAndStops.push(gradient.colors[i].color, " ");
@@ -48,13 +58,13 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
         // colorsAndStops.push(gradient.stopList[i].stop, "%") : 
         colorsAndStops.push(gradient.stopList[i].stop, "%")
         colorsAndStops.push(",")
-    }
+    };
     colorsAndStops = colorsAndStops.slice(0,colorsAndStops.length - 1);
-    constructedStyle[3] = colorsAndStops.join("") + ")";
-    setStyle(constructedStyle.join(" "))
-  }, [gradient])
+    constructedStyle.push(colorsAndStops.join("") + ")");
+    setStyle(constructedStyle.join(" "));
+  }, [gradient]);
 
-  const [style, setStyle] = useState<string>("")
+  const [style, setStyle] = useState<string>("");
 
   const updateGradientType = (value: string) => {
     setGradient({...gradient, type: value});

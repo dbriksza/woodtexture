@@ -7,20 +7,21 @@ export default function GradientSelect() {
     const gradient = use(GradientContext);
 
     const changeGradientType = (event: React.ChangeEvent<HTMLInputElement>) => {
+        console.log(event.currentTarget.value)
         gradient.updateGradientType(event.currentTarget.value);
     }
 
     return (
         <div>
-            <fieldset onChange={() => changeGradientType} className="flex flex-col">
+            <fieldset className="flex flex-col">
                 <label>
-                    <input type="radio" name="gradientType" value="linear"/> Linear
+                    <input type="radio" name="gradientType" value="linear" onChange={changeGradientType}/> Linear
                 </label>
                 <label>
-                    <input type="radio" name="gradientType" value="radial"/> Radial
+                    <input type="radio" name="gradientType" value="radial" onChange={changeGradientType}/> Radial
                 </label>
                 <label>
-                    <input type="radio" name="gradientType" value="conic"/> Conic
+                    <input type="radio" name="gradientType" value="conic" onChange={changeGradientType}/> Conic
                 </label>
             </fieldset>
         </div>
