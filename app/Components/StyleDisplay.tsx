@@ -9,7 +9,10 @@ export default function StyleDisplay() {
     return (
         <div>
             <textarea readOnly value={gradient.style}></textarea>
-            <div className="h-[200px] w-[200px]" style={{background: gradient.style}}></div>
+            <div 
+                className="h-[200px] w-[200px] resize max-h-[100vh] max-w-[100vw] border overflow-auto" 
+                style={{background: gradient.style}}>
+                </div>
         </div>
     )
 }

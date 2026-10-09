@@ -15,7 +15,7 @@ export default function GradientSelect() {
         <div>
             <fieldset className="flex flex-col">
                 <label>
-                    <input type="radio" name="gradientType" value="linear" onChange={changeGradientType}/> Linear
+                    <input type="radio" name="gradientType" value="linear" onChange={changeGradientType} defaultChecked/> Linear
                 </label>
                 <label>
                     <input type="radio" name="gradientType" value="radial" onChange={changeGradientType}/> Radial

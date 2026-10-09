@@ -31,13 +31,23 @@ export default function ColorPicker() {
     return (
         <div className="flex flex-col bg-zinc-50 font-sans dark:bg-black">
             <div className="flex flex-col">
-                <button className="border-[2px] rounded-md px-[5px] shadow-md my-2" onClick={addColors}>Add Color</button>
-                <button className="border-[2px] rounded-md px-[5px] shadow-md my-2" onClick={subtractColors}>Remove Color</button>
+                <button className="border-[2px] rounded-md px-[5px] shadow-md my-2" onClick={addColors}>
+                    Add Color
+                </button>
+                <button className="border-[2px] rounded-md px-[5px] shadow-md my-2" onClick={subtractColors}>
+                    Remove Color
+                </button>
                 <div>
                     <fieldset>
                     {gradient.gradient.colors.map((color) => 
                         <div key={color.index + "colorContainer"} className="border-b shadow-md mb-2">
-                            <label htmlFor={color.index.toString() + "color"} key={color.index +"label"} className="w-[7ch] block">Color {color.index}: </label>
+                            <label 
+                                htmlFor={color.index.toString() + "color"} 
+                                key={color.index +"label"} 
+                                className="w-[7ch] block"
+                            >
+                                Color {color.index}: 
+                            </label>
                             <input 
                                 type="color" 
                                 key={color.index + "color"} 

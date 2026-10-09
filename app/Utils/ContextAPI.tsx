@@ -54,8 +54,6 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
     for(let i = 0; i < gradient.colors.length; i++){
         colorsAndStops.push(gradient.colors[i].color, " ");
         colorsAndStops.push(gradient.startList[i].start, "% ");
-        // i = gradient.colors.length - 1 ? 
-        // colorsAndStops.push(gradient.stopList[i].stop, "%") : 
         colorsAndStops.push(gradient.stopList[i].stop, "%")
         colorsAndStops.push(",")
     };
@@ -81,7 +79,9 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const addColors = (index: number, color: string) => {
-    let newStart = parseInt(gradient.stopList[gradient.stopList.length - 1].stop) > 90 ? 100 : parseInt(gradient.stopList[gradient.stopList.length - 1].stop) + 10;
+    let newStart = parseInt(gradient.stopList[gradient.stopList.length - 1].stop) > 90 ?
+      100 : 
+      parseInt(gradient.stopList[gradient.stopList.length - 1].stop) + 10;
     let newStop = newStart > 90 ? 100 : newStart + 10;
     setGradient({...gradient, 
       colors: [...gradient.colors, {index: index, color: color}], 
