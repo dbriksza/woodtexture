@@ -4,7 +4,7 @@ import { GradientContext } from "../Utils/ContextAPI"
 
 export default function RadialProperties() {
 
-    const gradient = use(GradientContext);
+    const gradientContainer = use(GradientContext);
 
     const xref = useRef<HTMLInputElement>(null);
 
@@ -15,42 +15,42 @@ export default function RadialProperties() {
     const yrefe = useRef<HTMLInputElement>(null);
 
     const changeRadialShape = (event: React.ChangeEvent<HTMLInputElement>) => {
-        gradient.updateGradientShape(event.currentTarget.value);
+        gradientContainer.updateGradientShape(event.currentTarget.value);
     }
 
     const changeRadialSize = (event: React.ChangeEvent<HTMLInputElement>) => {
-        gradient.updateGradientSize(event.currentTarget.value);
+        gradientContainer.updateGradientSize(event.currentTarget.value);
     }
 
     const changeRadialPosition = (event: React.ChangeEvent<HTMLInputElement>) => {
         if(event.currentTarget.name === "radialPositionX"){ 
-            gradient.updateGradientPosition("x", parseInt(event.currentTarget.value));
+            gradientContainer.updateGradientPosition("x", parseInt(event.currentTarget.value));
         } else if (event.currentTarget.name === "radialPositionY") {
-            gradient.updateGradientPosition("y", parseInt(event.currentTarget.value));
+            gradientContainer.updateGradientPosition("y", parseInt(event.currentTarget.value));
         }
     }
 
     const changeRadialShapeSize = (event: React.ChangeEvent<HTMLInputElement>) => {
         if(event.currentTarget.name === "ellipseSizeX"){ 
-            gradient.updateGradientShapeSize("x", parseInt(event.currentTarget.value));
+            gradientContainer.updateGradientShapeSize("x", parseInt(event.currentTarget.value));
         } else if (event.currentTarget.name === "ellipseSizeY") {
-            gradient.updateGradientShapeSize("y", parseInt(event.currentTarget.value));
+            gradientContainer.updateGradientShapeSize("y", parseInt(event.currentTarget.value));
         }
     }
 
     useEffect(() => {
-        if(gradient.gradient.type === "radial"){
-            xref.current!.value = gradient.gradient.position.x.toString();
-            yref.current!.value = gradient.gradient.position.y.toString();
-            if(gradient.gradient.shape === "ellipse"){
-                xrefe.current!.value = gradient.gradient.shapeSize.x.toString();
-                yrefe.current!.value = gradient.gradient.shapeSize.y.toString();
+        if(gradientContainer.currentGradient.type === "radial"){
+            xref.current!.value = gradientContainer.currentGradient.position.x.toString();
+            yref.current!.value = gradientContainer.currentGradient.position.y.toString();
+            if(gradientContainer.currentGradient.shape === "ellipse"){
+                xrefe.current!.value = gradientContainer.currentGradient.shapeSize.x.toString();
+                yrefe.current!.value = gradientContainer.currentGradient.shapeSize.y.toString();
             }
         }
-    },[gradient.gradient.position, gradient.gradient.type])
+    },[gradientContainer.currentGradient.position, gradientContainer.currentGradient.type])
 
     return (
-        <>{gradient.gradient.type === "radial" &&
+        <>{gradientContainer.currentGradient.type === "radial" &&
             <div className="flex flex-col">
                 <fieldset className="flex flex-col border-[2px] rounded p-2 my-4">
                     <div className="flex flex-col w-[40%]">
@@ -63,7 +63,7 @@ export default function RadialProperties() {
                     </div>
                 </fieldset>
                 <fieldset className="flex flex-col border-[2px] rounded p-2 my-4">
-                    {gradient.gradient.shape === "circle" && 
+                    {gradientContainer.currentGradient.shape === "circle" && 
                         <div className="flex flex-col">
                             <label>
                                 <input type="radio" name="radialSize" value="closest-side" onChange={changeRadialSize} defaultChecked/> Closest-Side
@@ -79,7 +79,7 @@ export default function RadialProperties() {
                             </label>
                         </div>
                     }
-                    {gradient.gradient.shape === "ellipse" && 
+                    {gradientContainer.currentGradient.shape === "ellipse" && 
                         <div>
                             <label><input ref={xrefe} type="number" name="ellipseSizeX" min="0" onChange={changeRadialShapeSize}/>Position X</label>
                             <label><input ref={yrefe} type="number" name="ellipseSizeY" min="0" onChange={changeRadialShapeSize}/>Position Y</label>

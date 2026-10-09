@@ -4,7 +4,7 @@ import { GradientContext } from "../Utils/ContextAPI"
 
 export default function InterpolationEditor() {
 
-    const gradient = use(GradientContext);
+    const gradientContainer = use(GradientContext);
 
     const [interpMethodShape, setInterpMethodShape] = useState<string>("rectangular-color-space");
 
@@ -35,7 +35,7 @@ export default function InterpolationEditor() {
         if(interpMethodShape === "polar-color-space"){
             fullInterp.push(hueInterpMethod + " hue")
         }
-        gradient.updateGradientInterpolationMethod(fullInterp.join(""))
+        gradientContainer.updateGradientInterpolationMethod(fullInterp.join(""))
     }, [interpMethodShape, interpMethodSpace, hueInterpMethod])
 
     return (

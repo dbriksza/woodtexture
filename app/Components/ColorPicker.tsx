@@ -1,32 +1,30 @@
 'use client'
-import { useState } from 'react';
 import { use } from "react"
 import { GradientContext } from "../Utils/ContextAPI"
 
 export default function ColorPicker() {
 
-    const gradient = use(GradientContext);
+    const gradientContainer = use(GradientContext);
 
     const modifyColors = (event: React.ChangeEvent<HTMLInputElement>) => {
-        gradient.updateGradientColors(parseInt(event.currentTarget.id), event.currentTarget.value);
+        gradientContainer.updateGradientColors(parseInt(event.currentTarget.id), event.currentTarget.value);
     }
 
     const modifyColorStopsStop = (event: React.ChangeEvent<HTMLInputElement>) => {
-        gradient.updateGradientStopList(parseInt(event.currentTarget.id), event.currentTarget.value);
+        gradientContainer.updateGradientStopList(parseInt(event.currentTarget.id), event.currentTarget.value);
     }
     const modifyColorStopsStart = (event: React.ChangeEvent<HTMLInputElement>) => {
-        gradient.updateGradientStartList(parseInt(event.currentTarget.id), event.currentTarget.value);
+        gradientContainer.updateGradientStartList(parseInt(event.currentTarget.id), event.currentTarget.value);
     }
 
     const addColors = () => {
         let newColor = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
-        gradient.addColors(gradient.gradient.colors.length, newColor);
+        gradientContainer.addColors(gradientContainer.currentGradient.colors.length, newColor);
     }
 
     const subtractColors = () => {
-        gradient.subtractColors();
+        gradientContainer.subtractColors();
     }
-
 
     return (
         <div className="flex flex-col bg-zinc-50 font-sans dark:bg-black">
@@ -39,7 +37,7 @@ export default function ColorPicker() {
                 </button>
                 <div>
                     <fieldset>
-                    {gradient.gradient.colors.map((color) => 
+                    {gradientContainer.currentGradient.colors.map((color) => 
                         <div key={color.index + "colorContainer"} className="border-b shadow-md mb-2">
                             <label 
                                 htmlFor={color.index.toString() + "color"} 
@@ -64,7 +62,7 @@ export default function ColorPicker() {
                                 id={color.index.toString() + "start"} 
                                 name={color.index.toString() + "start"} 
                                 onChange={modifyColorStopsStart}
-                                min="0" max="100" defaultValue={gradient.gradient.startList[color.index].start}>
+                                min="0" max="100" defaultValue={gradientContainer.currentGradient.startList[color.index].start}>
                             </input>
                             <label htmlFor={color.index.toString() + "end"} className="px-2">End:</label>
                             <input 
@@ -73,7 +71,7 @@ export default function ColorPicker() {
                                 id={color.index.toString() + "end"} 
                                 name={color.index.toString() + "end"} 
                                 onChange={modifyColorStopsStop}
-                                min="0" max="100" defaultValue={gradient.gradient.stopList[color.index].stop}>
+                                min="0" max="100" defaultValue={gradientContainer.currentGradient.stopList[color.index].stop}>
                             </input>
                         </div>
                     )}

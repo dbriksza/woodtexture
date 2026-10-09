@@ -3,8 +3,9 @@
 import { createContext, useEffect, useState, ReactNode } from 'react';
 
 interface GradientContextType {
-  gradient: Gradient;
+  gradients: Gradient[];
   style: string;
+  currentGradient: Gradient;
   updateGradientType: (value: string) => void;
   updateGradientColors: (index: number, color: string) => void;
   updateGradientAngle: (angle: number) => void;
@@ -17,12 +18,15 @@ interface GradientContextType {
   updateGradientStartList: (index: number, start: string) => void;
   updateGradientStopList: (index: number, stop: string) => void;
   subtractColors: () => void;
+  addGradient: () => void;
+  changeCurrentGradient: (value: number) => void;
   addColors: (index: number, color: string) => void;
 }
 
 export const GradientContext = createContext<GradientContextType>({} as GradientContextType);
 
 export const GradientProvider = ({ children }: { children: ReactNode }) => {
+
   const [gradient, setGradient] = useState<Gradient>({
     type: "linear",
     colors: [{color: "#f58224", index: 0}],
@@ -37,42 +41,98 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
     stopList: [{stop: "10", index: 0}]
   });
 
-  useEffect(() => {
-    let constructedStyle = [];
-    switch(gradient.type){
+  const [gradientArray, setGradientArray] = useState<Gradient[]>([
+    {
+      type: "linear",
+      colors: [{color: "#f58224", index: 0}],
+      angle: 0,
+      shape: "circle",
+      size: "farthest-corner",
+      shapeSize: {x: 50, y: 10},
+      position: {x: 50, y: 50},
+      interpolationMethod: "in srgb",
+      repeating: false,
+      startList: [{start: "0", index: 0}],
+      stopList: [{stop: "10", index: 0}]
+    }
+  ]);
+
+  const [currentGradient, setCurrentGradient] = useState<number>(0)
+
+  const [style, setStyle] = useState<string>("");
+
+  const styleCompiler = () => {
+
+    let constructedStyle: string[] = [];
+
+    gradientArray.forEach((grad) => {
+
+      switch(grad.type){
         case "linear":
             constructedStyle.push("linear-gradient(");
-            constructedStyle.push(gradient.angle + "rad ");
+            constructedStyle.push(grad.angle + "rad ");
             break;
           case "radial":
             constructedStyle.push("radial-gradient(");
-            constructedStyle.push(gradient.shape + " ");
-            if(gradient.shape === "ellipse"){
-              constructedStyle.push(gradient.shapeSize.x + "% " + gradient.shapeSize.y + "% " );
+            constructedStyle.push(grad.shape + " ");
+            if(grad.shape === "ellipse"){
+              constructedStyle.push(grad.shapeSize.x + "% " + grad.shapeSize.y + "% " );
             } else {
-              constructedStyle.push(gradient.size + " ")
+              constructedStyle.push(grad.size + " ")
             }
-            constructedStyle.push("at " + gradient.position.x + "% " + gradient.position.y + "% ");
+            constructedStyle.push("at " + grad.position.x + "% " + grad.position.y + "% ");
             // constructedStyle.push(gradient.size + " ");
             break;
           case "conic":
             constructedStyle.push("conic-gradient(");
             break;
-    };
-    constructedStyle.push(gradient.interpolationMethod + ", ");
-    let colorsAndStops = [];
-    for(let i = 0; i < gradient.colors.length; i++){
-        colorsAndStops.push(gradient.colors[i].color, " ");
-        colorsAndStops.push(gradient.startList[i].start, "% ");
-        colorsAndStops.push(gradient.stopList[i].stop, "%")
-        colorsAndStops.push(",")
-    };
-    colorsAndStops = colorsAndStops.slice(0,colorsAndStops.length - 1);
-    constructedStyle.push(colorsAndStops.join("") + ")");
-    setStyle(constructedStyle.join(""));
+      };
+
+      constructedStyle.push(grad.interpolationMethod + ", ");
+
+      let colorsAndStops = [];
+
+      for(let i = 0; i < grad.colors.length; i++){
+          colorsAndStops.push(grad.colors[i].color + " ");
+          colorsAndStops.push(grad.startList[i].start + "% ");
+          colorsAndStops.push(grad.stopList[i].stop + "%");
+          colorsAndStops.push(", ");
+      };
+
+      colorsAndStops = colorsAndStops.slice(0, colorsAndStops.length - 1);
+
+      let JoinedColorsAndStops = colorsAndStops.join("");
+
+      constructedStyle.push(JoinedColorsAndStops + ")");
+
+      constructedStyle.push(", ")
+
+    });
+
+    constructedStyle.pop();
+
+    let newStyle = constructedStyle.join("")
+
+    setStyle(newStyle);
+
+    console.log(newStyle)
+  }
+
+  useEffect(() => {
+
+    setGradientArray([
+      ...gradientArray.map((grad, i) => 
+        i === currentGradient ? 
+      {...grad, ...gradient} : 
+      grad)
+    ]);
+
   }, [gradient]);
 
-  const [style, setStyle] = useState<string>("");
+  useEffect(() => {
+    styleCompiler();
+  }, [gradientArray])
+
 
   const updateGradientType = (value: string) => {
     setGradient({...gradient, type: value});
@@ -168,9 +228,20 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
     })
   }
 
+  const addGradient = () => {
+    setGradientArray([...gradientArray, gradient]);
+    setGradient(gradientArray[gradientArray.length - 1]);
+    setCurrentGradient(gradientArray.length - 1);
+  }
+
+  const changeCurrentGradient = (value: number) => {
+    setGradient(gradientArray[value]);
+  }
+
   const value: GradientContextType = {
-    gradient: gradient,
+    gradients: gradientArray,
     style: style,
+    currentGradient: gradient,
     updateGradientType,
     updateGradientColors,
     updateGradientAngle,
@@ -184,6 +255,8 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
     subtractColors,
     addColors,
     updateGradientSize,
+    addGradient,
+    changeCurrentGradient,
   }
 
   return (

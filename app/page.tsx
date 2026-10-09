@@ -12,10 +12,10 @@ export default function Home() {
       <main className="w-full h-full grid grid-cols-2 gap-4 py-32 px-16 bg-white dark:bg-black items-start">
         <GradientProvider>
           <ColorPicker/>
+          <GradientSelect/>
           <InterpolationEditor/>
           <DirectionSelect/>
           <RadialProperties/>
-          <GradientSelect/>
           <StyleDisplay/>
         </GradientProvider>
       </main>

@@ -4,11 +4,11 @@ import { GradientContext } from "../Utils/ContextAPI"
 
 export default function GradientSelect() {
 
-    const gradient = use(GradientContext);
+    const gradientContainer = use(GradientContext);
 
     const changeGradientType = (event: React.ChangeEvent<HTMLInputElement>) => {
         console.log(event.currentTarget.value)
-        gradient.updateGradientType(event.currentTarget.value);
+        gradientContainer.updateGradientType(event.currentTarget.value);
     }
 
     return (
