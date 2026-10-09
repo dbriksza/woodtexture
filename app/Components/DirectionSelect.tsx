@@ -20,7 +20,7 @@ export default function DirectionSelect() {
     const customAngleRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        gradient.updateGradientAngle(angle.toString());
+        gradient.updateGradientAngle(angle);
     }, [angle])
 
     const changeDirectionRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,31 +67,33 @@ export default function DirectionSelect() {
     }
 
     return (
-        <div className="py-[2rem] pl-[4ch] flex flex-row items-center">
-            <fieldset className="relative w-[100px] h-[100px]">
-                <svg viewBox="50 50 100 100" xmlns="http://www.w3.org/2000/svg" onClick={changeDirectionCircle}>
-                    <circle cx="100" cy="100" r="50" />
-                    <line x1="100" y1="100" x2={xy.x} y2={xy.y} stroke="red" strokeWidth="2" />
-                </svg>
-                <label className="absolute bottom-[105%] right-[-43%] w-[100px] mb-[-.4em]">
-                    <input type="radio" name="angle" value="up" onChange={changeDirectionRadio} defaultChecked/> Up
-                </label>
-                <label className="absolute left-[105%] top-[calc(50%-10px)] h-[10px]">
-                    <input type="radio" name="angle" value="right" onChange={changeDirectionRadio}/> Right
-                </label>
-                <label className="absolute top-[105%] right-[-43%] w-[100px]">
-                    <input type="radio" name="angle" value="down" onChange={changeDirectionRadio}/> Down
-                </label>
-                <label className="absolute right-[105%] top-[calc(50%-10px)] h-[10px] text-right">
-                    <input type="radio" name="angle" value="left" onChange={changeDirectionRadio}/> Left
-                </label>
-                <input 
-                    ref={customAngleRef} 
-                    className="hidden" type="radio" name="angle" value="customAngle" 
-                    onChange={changeDirectionRadio}
-                />
-            </fieldset>
-            <span className="block max-w-[100px] w-[100px] ml-[5rem]">Angle: {angle}</span>
-        </div>
+        <>{gradient.gradient.type === "linear" &&
+            <div className="py-[2rem] pl-[4ch] flex flex-row items-center">
+                <fieldset className="relative min-w-[100px] min-h-[100px]">
+                    <svg viewBox="50 50 100 100" xmlns="http://www.w3.org/2000/svg" onClick={changeDirectionCircle}>
+                        <circle cx="100" cy="100" r="50" />
+                        <line x1="100" y1="100" x2={xy.x} y2={xy.y} stroke="red" strokeWidth="2" />
+                    </svg>
+                    <label className="absolute bottom-[105%] right-[-43%] w-[100px] mb-[-.4em]">
+                        <input type="radio" name="angle" value="up" onChange={changeDirectionRadio} defaultChecked/> Up
+                    </label>
+                    <label className="absolute left-[105%] top-[calc(50%-10px)] h-[10px]">
+                        <input type="radio" name="angle" value="right" onChange={changeDirectionRadio}/> Right
+                    </label>
+                    <label className="absolute top-[105%] right-[-43%] w-[100px]">
+                        <input type="radio" name="angle" value="down" onChange={changeDirectionRadio}/> Down
+                    </label>
+                    <label className="absolute right-[105%] top-[calc(50%-10px)] h-[10px] text-right">
+                        <input type="radio" name="angle" value="left" onChange={changeDirectionRadio}/> Left
+                    </label>
+                    <input 
+                        ref={customAngleRef} 
+                        className="hidden" type="radio" name="angle" value="customAngle" 
+                        onChange={changeDirectionRadio}
+                    />
+                </fieldset>
+                <span className="block max-w-[100px] w-[100px] ml-[5rem]">Angle: {angle}</span>
+            </div>
+        }</>
     )
 }

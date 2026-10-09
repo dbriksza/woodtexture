@@ -1,10 +1,11 @@
 interface Gradient {
     type: string;
     colors: Color[];
-    angle: string;
+    angle: number;
     shape: string;
     size: string;
-    position: string;
+    shapeSize : {x: number, y: number};
+    position: {x: number, y: number};
     interpolationMethod: string;
     repeating: boolean;
     stopList: Stop[];

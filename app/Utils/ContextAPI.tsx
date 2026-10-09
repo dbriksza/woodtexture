@@ -7,11 +7,13 @@ interface GradientContextType {
   style: string;
   updateGradientType: (value: string) => void;
   updateGradientColors: (index: number, color: string) => void;
-  updateGradientAngle: (value: string) => void;
-  updateGradientShape: (value: string) => void;
-  updateGradientPosition: (value: string) => void;
-  updateGradientInterpolationMethod: (value: string) => void;
-  updateGradientRepeating: (value: boolean) => void;
+  updateGradientAngle: (angle: number) => void;
+  updateGradientShape: (shape: string) => void;
+  updateGradientSize: (size: string) => void;
+  updateGradientPosition: (xory: "x" | "y" | "xy", value1: number, value2?: number) => void;
+  updateGradientShapeSize: (xory: "x" | "y" | "xy", value1: number, value2?: number) => void;
+  updateGradientInterpolationMethod: (interpMethod: string) => void;
+  updateGradientRepeating: (repeating: boolean) => void;
   updateGradientStartList: (index: number, start: string) => void;
   updateGradientStopList: (index: number, stop: string) => void;
   subtractColors: () => void;
@@ -24,10 +26,11 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
   const [gradient, setGradient] = useState<Gradient>({
     type: "linear",
     colors: [{color: "#f58224", index: 0}],
-    angle: "0",
-    shape: "",
-    size: "",
-    position: "",
+    angle: 0,
+    shape: "circle",
+    size: "farthest-corner",
+    shapeSize: {x: 50, y: 10},
+    position: {x: 50, y: 50},
     interpolationMethod: "in srgb",
     repeating: false,
     startList: [{start: "0", index: 0}],
@@ -43,13 +46,20 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
             break;
           case "radial":
             constructedStyle.push("radial-gradient(");
-            constructedStyle.push(gradient.shape + "rad," + gradient.size === "" ? "farthest-corner, " : gradient.size + " ");
+            constructedStyle.push(gradient.shape + " ");
+            if(gradient.shape === "ellipse"){
+              constructedStyle.push(gradient.shapeSize.x + "% " + gradient.shapeSize.y + "% " );
+            } else {
+              constructedStyle.push(gradient.size + " ")
+            }
+            constructedStyle.push("at " + gradient.position.x + "% " + gradient.position.y + "% ");
+            // constructedStyle.push(gradient.size + " ");
             break;
           case "conic":
             constructedStyle.push("conic-gradient(");
             break;
     };
-    constructedStyle.push(gradient.interpolationMethod + ",");
+    constructedStyle.push(gradient.interpolationMethod + ", ");
     let colorsAndStops = [];
     for(let i = 0; i < gradient.colors.length; i++){
         colorsAndStops.push(gradient.colors[i].color, " ");
@@ -59,7 +69,7 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
     };
     colorsAndStops = colorsAndStops.slice(0,colorsAndStops.length - 1);
     constructedStyle.push(colorsAndStops.join("") + ")");
-    setStyle(constructedStyle.join(" "));
+    setStyle(constructedStyle.join(""));
   }, [gradient]);
 
   const [style, setStyle] = useState<string>("");
@@ -98,24 +108,44 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
     })
   }
 
-  const updateGradientAngle = (value: string) => {
-    setGradient({...gradient, angle: value});
+  const updateGradientAngle = (angle: number) => {
+    setGradient({...gradient, angle: angle});
   }
 
-  const updateGradientShape = (value: string) => {
-    setGradient({...gradient, shape: value});
+  const updateGradientShape = (shape: string) => {
+    setGradient({...gradient, shape: shape});
   }
 
-  const updateGradientPosition = (value: string) => {
-    setGradient({...gradient, position: value});
+  const updateGradientPosition = (xory: string, value1: number, value2?: number) => {
+    if(xory === "x"){
+      setGradient({...gradient, position: {x: value1, y: gradient.position.y}});
+    } else if(xory === "y") {
+      setGradient({...gradient, position: {x: gradient.position.x, y: value1}});
+    } else if (xory === "xy" && value2) {
+      setGradient({...gradient, position: {x: value1, y: value2}});
+    }
   }
 
-  const updateGradientInterpolationMethod = (value: string) => {
-    setGradient({...gradient, interpolationMethod: value});
+  const updateGradientShapeSize = (xory: string, value1: number, value2?: number) => {
+    if(xory === "x"){
+      setGradient({...gradient, shapeSize: {x: value1, y: gradient.shapeSize.y}});
+    } else if(xory === "y") {
+      setGradient({...gradient, shapeSize: {x: gradient.shapeSize.x, y: value1}});
+    } else if (xory === "xy" && value2) {
+      setGradient({...gradient, shapeSize: {x: value1, y: value2}});
+    }
+  }
+
+  const updateGradientInterpolationMethod = (interpMethod: string) => {
+    setGradient({...gradient, interpolationMethod: interpMethod});
   }
 
   const updateGradientRepeating = (value: boolean) => {
     setGradient({...gradient, repeating: value});
+  }
+
+  const updateGradientSize = (size: string) => {
+    setGradient({...gradient, size: size});
   }
 
   const updateGradientStopList = (index: number, stop: string) => {
@@ -146,12 +176,14 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
     updateGradientAngle,
     updateGradientShape,
     updateGradientPosition,
+    updateGradientShapeSize,
     updateGradientInterpolationMethod,
     updateGradientRepeating,
     updateGradientStopList,
     updateGradientStartList,
     subtractColors,
     addColors,
+    updateGradientSize,
   }
 
   return (
