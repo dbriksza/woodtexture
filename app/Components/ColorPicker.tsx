@@ -1,67 +1,73 @@
 'use client'
 import { useState } from 'react';
+import { use } from "react"
+import { GradientContext } from "../Utils/ContextAPI"
 
 export default function ColorPicker() {
 
-    interface ColorPicker {
+    const gradient = use(GradientContext);
+
+    interface Color {
         id: number;
         color: string;
     }
 
-    const modifyColors = (action: string) => {
-        console.log(action, colors.length)
-        switch (action) {
-            case "add":
-                const newColorInput = {id:colors.length + 1, color:"#fc7c03"}
-                setColors(prevItems => [...prevItems, newColorInput]);
-                break;
-            case "subtract":
-                setColors(prevItems => {
-                    const newItems = [...prevItems];
-                    newItems.pop();
-                    return newItems;
-                });
-                break;
-            default:
-                break;
-        }
+    const modifyColors = (event: React.ChangeEvent<HTMLInputElement>) => {
+        gradient.updateGradientColors(parseInt(event.currentTarget.id), event.currentTarget.value);
     }
 
-    const [colors, setColors] = useState<ColorPicker[]>([]);
+    const modifyColorStopsStop = (event: React.ChangeEvent<HTMLInputElement>) => {
+        gradient.updateGradientStopListStop(parseInt(event.currentTarget.id), event.currentTarget.value);
+    }
+    const modifyColorStopsStart = (event: React.ChangeEvent<HTMLInputElement>) => {
+        gradient.updateGradientStopListStart(parseInt(event.currentTarget.id), event.currentTarget.value);
+    }
+
+    const addColors = () => {
+        gradient.addColors(gradient.gradient.colors.length, "#fc7c03");
+    }
+
+    const subtractColors = () => {
+        gradient.subtractColors();
+    }
+
 
     return (
         <div className="flex flex-col bg-zinc-50 font-sans dark:bg-black">
             <div className="flex flex-col">
-                <button className="border-[2px] rounded-md px-[5px] shadow-md my-2" onClick={()=>modifyColors("add")}>Add Color</button>
-                <button className="border-[2px] rounded-md px-[5px] shadow-md my-2" onClick={()=>modifyColors("subtract")}>Remove Color</button>
+                <button className="border-[2px] rounded-md px-[5px] shadow-md my-2" onClick={addColors}>Add Color</button>
+                <button className="border-[2px] rounded-md px-[5px] shadow-md my-2" onClick={subtractColors}>Remove Color</button>
                 <div>
                     <fieldset>
-                    {colors.map((color) => 
-                        <div key={color.id + "colorContainer"} className="border-b shadow-md mb-2">
-                            <label htmlFor={color.id.toString() + "color"} key={color.id +"label"} className="w-[7ch] block">Color {color.id}: </label>
+                    {gradient.gradient.colors.map((color) => 
+                        <div key={color.index + "colorContainer"} className="border-b shadow-md mb-2">
+                            <label htmlFor={color.index.toString() + "color"} key={color.index +"label"} className="w-[7ch] block">Color {color.index}: </label>
                             <input 
                                 type="color" 
-                                key={color.id + "color"} 
-                                id={color.id.toString() + "color"}  
-                                name={color.id.toString() + "color"}
+                                key={color.index + "color"} 
+                                id={color.index.toString() + "color"}  
+                                name={color.index.toString() + "color"}
                                 defaultValue={color.color}
+                                onChange={modifyColors}
                             />
 
-                            <label htmlFor={color.id.toString() + "start"} className="px-2">Start:</label>
+                            <label htmlFor={color.index.toString() + "start"} className="px-2">Start:</label>
                             <input 
                                 type="number" 
-                                key={color.id + "start"}
-                                id={color.id.toString() + "start"} 
-                                name={color.id.toString() + "start"} 
+                                key={color.index + "start"}
+                                id={color.index.toString() + "start"} 
+                                name={color.index.toString() + "start"} 
+                                onChange={modifyColorStopsStart}
                                 min="0" max="100" defaultValue="0">
                             </input>
-                            <label htmlFor={color.id.toString() + "end"} className="px-2">End:</label>
+                            <label htmlFor={color.index.toString() + "end"} className="px-2">End:</label>
                             <input 
                                 type="number" 
-                                key={color.id + "end"}
-                                id={color.id.toString() + "end"} 
-                                name={color.id.toString() + "end"} 
-                                min="0" max="100" defaultValue="0">
+                                key={color.index + "end"}
+                                id={color.index.toString() + "end"} 
+                                name={color.index.toString() + "end"} 
+                                onChange={modifyColorStopsStop}
+                                min="0" max="100" defaultValue="100">
                             </input>
                         </div>
                     )}

@@ -1,11 +1,21 @@
 interface Gradient {
     type: string;
-    angle?: string;
-    directionX?: string;
-    directionY?: string;
-    shape?: string;
-    position?: string;
-    interpolationMethod?: string;
+    colors: Color[];
+    angle: string;
+    shape: string;
+    position: string;
+    interpolationMethod: string;
     repeating: boolean;
-    stopList?: string[];
+    stopList: Stop[];
+}
+
+interface Color {
+    color: string;
+    index: number;
+}
+
+interface Stop {
+    start: string;
+    stop: string;
+    index: number;
 }

@@ -1,7 +1,11 @@
 'use client'
 import { useState, useRef } from 'react';
+import { use } from "react"
+import { GradientContext } from "../Utils/ContextAPI"
 
 export default function DirectionSelect() {
+
+    const gradient = use(GradientContext);
 
     // const [direction, setDirection] = useState<Gradient>({type: "linear", repeating: false})
 
@@ -39,6 +43,7 @@ export default function DirectionSelect() {
             default:
                 break;
         }
+        gradient.updateGradientAngle(angle.toString());
     }
 
     const changeDirectionCircle = (event: React.MouseEvent<SVGGraphicsElement, MouseEvent>) => {
@@ -57,6 +62,8 @@ export default function DirectionSelect() {
         setAngle(angle);
 
         setXY({x: x2 + x1, y: y2 + y1});
+
+        gradient.updateGradientAngle(angle.toString());
 
     }
 
