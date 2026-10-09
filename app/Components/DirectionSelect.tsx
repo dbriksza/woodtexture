@@ -1,5 +1,5 @@
 'use client'
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { use } from "react"
 import { GradientContext } from "../Utils/ContextAPI"
 
@@ -20,30 +20,33 @@ export default function DirectionSelect() {
 
     const customAngleRef = useRef<HTMLInputElement>(null);
 
+    useEffect(() => {
+        gradient.updateGradientAngle(angle.toString());
+    }, [angle])
+
     const changeDirectionRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
         switch (event.currentTarget.value) {
             case "up":
                 setXY({x: 100, y: 0})
-                setAngle(90);
+                setAngle(0 * (Math.PI));
                 break;
             case "right":
                 setXY({x: 200, y: 100})
-                setAngle(0);
+                setAngle(.5 * (Math.PI));
                 break;
             case "down":
                 setXY({x: 100, y: 200})
-                setAngle(-90);
+                setAngle(1 * (Math.PI));
                 break;
             case "left":
                 setXY({x: 0, y: 100})
-                setAngle(180);
+                setAngle(1.5 * (Math.PI));
                 break;
             case "custom":
                 break;
             default:
                 break;
         }
-        gradient.updateGradientAngle(angle.toString());
     }
 
     const changeDirectionCircle = (event: React.MouseEvent<SVGGraphicsElement, MouseEvent>) => {
@@ -57,14 +60,11 @@ export default function DirectionSelect() {
         let x2 = event.clientX - rect1.left;
         let y2 = event.clientY - rect1.top;
 
-        let angle = -1 * (Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI));
+        let angle = (Math.atan2(y1 - y2, x1 - x2) - Math.PI/2);
 
         setAngle(angle);
 
         setXY({x: x2 + x1, y: y2 + y1});
-
-        gradient.updateGradientAngle(angle.toString());
-
     }
 
     return (

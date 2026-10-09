@@ -12,8 +12,8 @@ interface GradientContextType {
   updateGradientPosition: (value: string) => void;
   updateGradientInterpolationMethod: (value: string) => void;
   updateGradientRepeating: (value: boolean) => void;
-  updateGradientStopListStart: (index: number, start: string) => void;
-  updateGradientStopListStop: (index: number, stop: string) => void;
+  updateGradientStartList: (index: number, start: string) => void;
+  updateGradientStopList: (index: number, stop: string) => void;
   subtractColors: () => void;
   addColors: (index: number, color: string) => void;
 }
@@ -29,7 +29,8 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
     position: "",
     interpolationMethod: "",
     repeating: false,
-    stopList: [{start: "0", stop: "100", index: 0}]
+    startList: [{start: "0", index: 0}],
+    stopList: [{stop: "10", index: 0}]
   });
 
   useEffect(() => {
@@ -38,11 +39,11 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
         case "linear":
             constructedStyle[1] = "linear-gradient("
     }
-    constructedStyle[2] = gradient.angle + "deg,";
+    constructedStyle[2] = gradient.angle + "rad,";
     let colorsAndStops = [];
     for(let i = 0; i < gradient.colors.length; i++){
         colorsAndStops.push(gradient.colors[i].color, " ");
-        colorsAndStops.push(gradient.stopList[i].start, "% ");
+        colorsAndStops.push(gradient.startList[i].start, "% ");
         // i = gradient.colors.length - 1 ? 
         // colorsAndStops.push(gradient.stopList[i].stop, "%") : 
         colorsAndStops.push(gradient.stopList[i].stop, "%")
@@ -70,9 +71,13 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const addColors = (index: number, color: string) => {
+    let newStart = parseInt(gradient.stopList[gradient.stopList.length - 1].stop) > 90 ? 100 : parseInt(gradient.stopList[gradient.stopList.length - 1].stop) + 10;
+    let newStop = newStart > 90 ? 100 : newStart + 10;
     setGradient({...gradient, 
       colors: [...gradient.colors, {index: index, color: color}], 
-      stopList: [...gradient.stopList, {index: index, start: "0", stop: "100"}]
+      startList: [...gradient.startList, {index: index, start: newStart.toString()}],
+      stopList: [...gradient.stopList, {index: index, stop: newStop.toString()}],
+      
     });
   }
 
@@ -103,22 +108,22 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
     setGradient({...gradient, repeating: value});
   }
 
-  const updateGradientStopListStart = (index: number, start: string) => {
+  const updateGradientStopList = (index: number, stop: string) => {
     setGradient({...gradient, 
       stopList: gradient.stopList.map(stopmap => 
         stopmap.index === index ? 
-        {...gradient.stopList[index], start: start, stop: stopmap.stop, index: index} : 
+        {...gradient.stopList[index], stop: stop, index: index} : 
         stopmap
       )
     })
   }
 
-  const updateGradientStopListStop = (index: number, stop: string) => {
+  const updateGradientStartList = (index: number, start: string) => {
     setGradient({...gradient, 
-      stopList: gradient.stopList.map(stopmap => 
-        stopmap.index === index ? 
-        {...gradient.stopList[index], start: stopmap.start, stop: stop, index: index} : 
-        stopmap
+      startList: gradient.startList.map(startmap => 
+        startmap.index === index ? 
+        {...gradient.startList[index], start: start, index: index} : 
+        startmap
       )
     })
   }
@@ -133,8 +138,8 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
     updateGradientPosition,
     updateGradientInterpolationMethod,
     updateGradientRepeating,
-    updateGradientStopListStart,
-    updateGradientStopListStop,
+    updateGradientStopList,
+    updateGradientStartList,
     subtractColors,
     addColors,
   }

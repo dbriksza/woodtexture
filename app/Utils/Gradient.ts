@@ -7,6 +7,7 @@ interface Gradient {
     interpolationMethod: string;
     repeating: boolean;
     stopList: Stop[];
+    startList: Start[];
 }
 
 interface Color {
@@ -15,7 +16,11 @@ interface Color {
 }
 
 interface Stop {
-    start: string;
     stop: string;
+    index: number;
+}
+
+interface Start {
+    start: string;
     index: number;
 }

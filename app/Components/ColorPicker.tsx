@@ -17,10 +17,10 @@ export default function ColorPicker() {
     }
 
     const modifyColorStopsStop = (event: React.ChangeEvent<HTMLInputElement>) => {
-        gradient.updateGradientStopListStop(parseInt(event.currentTarget.id), event.currentTarget.value);
+        gradient.updateGradientStopList(parseInt(event.currentTarget.id), event.currentTarget.value);
     }
     const modifyColorStopsStart = (event: React.ChangeEvent<HTMLInputElement>) => {
-        gradient.updateGradientStopListStart(parseInt(event.currentTarget.id), event.currentTarget.value);
+        gradient.updateGradientStartList(parseInt(event.currentTarget.id), event.currentTarget.value);
     }
 
     const addColors = () => {
@@ -58,7 +58,7 @@ export default function ColorPicker() {
                                 id={color.index.toString() + "start"} 
                                 name={color.index.toString() + "start"} 
                                 onChange={modifyColorStopsStart}
-                                min="0" max="100" defaultValue="0">
+                                min="0" max="100" defaultValue={gradient.gradient.startList[color.index].start}>
                             </input>
                             <label htmlFor={color.index.toString() + "end"} className="px-2">End:</label>
                             <input 
@@ -67,7 +67,7 @@ export default function ColorPicker() {
                                 id={color.index.toString() + "end"} 
                                 name={color.index.toString() + "end"} 
                                 onChange={modifyColorStopsStop}
-                                min="0" max="100" defaultValue="100">
+                                min="0" max="100" defaultValue={gradient.gradient.stopList[color.index].stop}>
                             </input>
                         </div>
                     )}
