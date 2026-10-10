@@ -2,6 +2,8 @@
 import { use } from "react"
 import { GradientContext } from "../Utils/ContextAPI"
 
+import AngleSelector from "./AngleSelector";
+
 export default function ColorPicker() {
 
     const gradientContainer = use(GradientContext);
@@ -11,15 +13,24 @@ export default function ColorPicker() {
     }
 
     const modifyColorStopsStop = (event: React.ChangeEvent<HTMLInputElement>) => {
-        gradientContainer.updateGradientStopList(parseInt(event.currentTarget.id), event.currentTarget.value);
+        gradientContainer.updateGradientStopList(parseInt(event.currentTarget.id), parseFloat(event.currentTarget.value));
     }
+
     const modifyColorStopsStart = (event: React.ChangeEvent<HTMLInputElement>) => {
-        gradientContainer.updateGradientStartList(parseInt(event.currentTarget.id), event.currentTarget.value);
+        gradientContainer.updateGradientStartList(parseInt(event.currentTarget.id), parseFloat(event.currentTarget.value));
     }
 
     const addColors = () => {
         let newColor = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
         gradientContainer.addColors(gradientContainer.currentGradient.colors.length, newColor);
+    }
+
+    const handleData = (angle: number, id?: number, startorstop?: "start" | "stop") => {
+        if (startorstop === "stop"){
+            gradientContainer.updateGradientStopList(id!, angle);
+        } else if (startorstop === "start") {
+            gradientContainer.updateGradientStartList(id!, angle);
+        }
     }
 
     const subtractColors = () => {
@@ -54,25 +65,49 @@ export default function ColorPicker() {
                                 defaultValue={color.color}
                                 onChange={modifyColors}
                             />
-
-                            <label htmlFor={color.index.toString() + "start"} className="px-2">Start:</label>
-                            <input 
-                                type="number" 
-                                key={color.index + "start"}
-                                id={color.index.toString() + "start"} 
-                                name={color.index.toString() + "start"} 
-                                onChange={modifyColorStopsStart}
-                                min="0" max="100" defaultValue={gradientContainer.currentGradient.startList[color.index].start}>
-                            </input>
-                            <label htmlFor={color.index.toString() + "end"} className="px-2">End:</label>
-                            <input 
-                                type="number" 
-                                key={color.index + "end"}
-                                id={color.index.toString() + "end"} 
-                                name={color.index.toString() + "end"} 
-                                onChange={modifyColorStopsStop}
-                                min="0" max="100" defaultValue={gradientContainer.currentGradient.stopList[color.index].stop}>
-                            </input>
+                            {(gradientContainer.currentGradient.type === "linear" ||  gradientContainer.currentGradient.type === "radial") &&
+                            <>
+                                <label htmlFor={color.index.toString() + "start"} className="px-2">Start:</label>
+                                <input 
+                                    type="number" 
+                                    key={color.index + "start"}
+                                    id={color.index.toString() + "start"} 
+                                    name={color.index.toString() + "start"} 
+                                    onChange={modifyColorStopsStart}
+                                    min="0" max="100" defaultValue={gradientContainer.currentGradient.startList[color.index].pos}>
+                                </input>
+                                <label htmlFor={color.index.toString() + "end"} className="px-2">End:</label>
+                                <input 
+                                    type="number" 
+                                    key={color.index + "end"}
+                                    id={color.index.toString() + "end"} 
+                                    name={color.index.toString() + "end"} 
+                                    onChange={modifyColorStopsStop}
+                                    min="0" max="100" defaultValue={gradientContainer.currentGradient.stopList[color.index].pos}>
+                                </input>
+                            </>}
+                            {gradientContainer.currentGradient.type === "conic" &&
+                            <>
+                                <label>Start</label>
+                                <AngleSelector 
+                                    key={color.index + "start"}
+                                    sendData={handleData}
+                                    id={color.index}
+                                    startorstop="start"
+                                    defaultValue={gradientContainer.currentGradient.startList[color.index].pos}
+                                >
+                                </AngleSelector>
+                                <label>Stop</label>
+                                <AngleSelector 
+                                    key={color.index + "end"}
+                                    sendData={handleData}
+                                    id={color.index}
+                                    startorstop="stop"
+                                    defaultValue={gradientContainer.currentGradient.stopList[color.index].pos}
+                                >
+                                </AngleSelector>
+                            </>
+                            }
                         </div>
                     )}
                     </fieldset>

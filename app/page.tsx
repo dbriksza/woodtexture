@@ -9,7 +9,7 @@ import { GradientProvider } from "./Utils/ContextAPI";
 export default function Home() {
   return (
     <div className="flex flex-col bg-zinc-50 font-sans dark:bg-black w-full h-full">
-      <main className="w-full h-full grid grid-cols-2 gap-4 py-32 px-16 bg-white dark:bg-black items-start">
+      <main className="w-full h-full grid grid-cols-2 gap-4 px-16 bg-white dark:bg-black items-start">
         <GradientProvider>
           <ColorPicker/>
           <GradientSelect/>

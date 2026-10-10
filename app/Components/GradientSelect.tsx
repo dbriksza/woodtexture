@@ -7,7 +7,6 @@ export default function GradientSelect() {
     const gradientContainer = use(GradientContext);
 
     const changeGradientType = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(event.currentTarget.value)
         gradientContainer.updateGradientType(event.currentTarget.value);
     }
 

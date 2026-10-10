@@ -12,13 +12,8 @@ export default function InterpolationEditor() {
 
     const [hueInterpMethod, setHueInterpMethod] = useState<string>("shorter");
 
-    const defaultRectangularRef = useRef<HTMLInputElement>(null);
-
-    const defaultPolarRef = useRef<HTMLInputElement>(null);
-
     const changeInterpolationMethodShape = (event: React.ChangeEvent<HTMLInputElement>) => {
         setInterpMethodShape(event.currentTarget.value);
-        event.currentTarget.value === "rectangular-color-space" ? defaultRectangularRef.current!.click() : defaultPolarRef.current!.click();
     }
 
     const changeInterpolationMethodSpace = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +53,7 @@ export default function InterpolationEditor() {
                             <p>Hue Interpolation Method</p>
                             <label>
                                 <input type="radio" name="hueInterpolationMethod" value="shorter" 
-                                onChange={changeHueInterpolationMethod}/> Shorter
+                                onChange={changeHueInterpolationMethod} defaultChecked/> Shorter
                             </label>
                             <label>
                                 <input type="radio" name="hueInterpolationMethod" value="longer" 
@@ -79,7 +74,7 @@ export default function InterpolationEditor() {
                     <p>Interpolation Color Space</p>
                     {interpMethodShape === "rectangular-color-space" && <>
                         <label>
-                            <input ref={defaultRectangularRef} type="radio" name="interpolationMethodSpace" value="srgb" 
+                            <input type="radio" name="interpolationMethodSpace" value="srgb"
                             onChange={changeInterpolationMethodSpace} defaultChecked/> SRGB
                         </label>
                         <label>
@@ -117,7 +112,7 @@ export default function InterpolationEditor() {
                     </>}
                     {interpMethodShape === "polar-color-space" && <>
                         <label>
-                            <input ref={defaultPolarRef} type="radio" name="interpolationMethodSpace" value="hsl" 
+                            <input type="radio" name="interpolationMethodSpace" value="hsl" defaultChecked
                             onChange={changeInterpolationMethodSpace}/> HSL
                         </label>
                         <label>

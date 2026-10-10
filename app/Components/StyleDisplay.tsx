@@ -21,7 +21,7 @@ export default function StyleDisplay() {
         <div>
             <textarea className="min-h-[200px] min-w-[400px]" readOnly value={gradientContainer.style}></textarea>
             <div 
-                className="h-[200px] w-[200px] resize max-h-[100vh] max-w-[100vw] border overflow-auto" 
+                className="h-[200px] w-[200px] resize max-h-[100vh] max-w-[100vw] border overflow-auto mb-[10vh]" 
                 onClick={updatePosition}
                 style={{background: gradientContainer.style}}>
             </div>

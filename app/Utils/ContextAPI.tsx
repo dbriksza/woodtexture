@@ -15,8 +15,8 @@ interface GradientContextType {
   updateGradientShapeSize: (xory: "x" | "y" | "xy", value1: number, value2?: number) => void;
   updateGradientInterpolationMethod: (interpMethod: string) => void;
   updateGradientRepeating: (repeating: boolean) => void;
-  updateGradientStartList: (index: number, start: string) => void;
-  updateGradientStopList: (index: number, stop: string) => void;
+  updateGradientStartList: (index: number, start: number) => void;
+  updateGradientStopList: (index: number, stop: number) => void;
   subtractColors: () => void;
   addGradient: () => void;
   changeCurrentGradient: (value: number) => void;
@@ -37,8 +37,8 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
     position: {x: 50, y: 50},
     interpolationMethod: "in srgb",
     repeating: false,
-    startList: [{start: "0", index: 0}],
-    stopList: [{stop: "10", index: 0}]
+    startList: [{pos: 0, index: 0}],
+    stopList: [{pos: 10, index: 0}]
   });
 
   const [gradientArray, setGradientArray] = useState<Gradient[]>([
@@ -52,8 +52,8 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
       position: {x: 50, y: 50},
       interpolationMethod: "in srgb",
       repeating: false,
-      startList: [{start: "0", index: 0}],
-      stopList: [{stop: "10", index: 0}]
+      startList: [{pos: 10, index: 0}],
+      stopList: [{pos: 10, index: 0}]
     }
   ]);
 
@@ -94,8 +94,8 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
 
       for(let i = 0; i < grad.colors.length; i++){
           colorsAndStops.push(grad.colors[i].color + " ");
-          colorsAndStops.push(grad.startList[i].start + "% ");
-          colorsAndStops.push(grad.stopList[i].stop + "%");
+          colorsAndStops.push(grad.startList[i].pos + (grad.type === "conic" ? "rad " : "% "));
+          colorsAndStops.push(grad.stopList[i].pos + (grad.type === "conic" ? "rad " : "% "));
           colorsAndStops.push(", ");
       };
 
@@ -114,8 +114,6 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
     let newStyle = constructedStyle.join("")
 
     setStyle(newStyle);
-
-    console.log(newStyle)
   }
 
   useEffect(() => {
@@ -133,12 +131,57 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
     styleCompiler();
   }, [gradientArray])
 
+  const normalizeAngle = (angle: number) => {
+    if (angle < 0) {
+        angle += 2 * Math.PI;
+    }
+    return angle;
+  }
+
+  const percentAngleConversion = (value: number, conversionType: "toRad" | "toPercent") => {
+    let newValue: number = 0;
+    if(conversionType === "toRad"){
+      newValue = (value / 100) * 2 * Math.PI;
+    } else if (conversionType === "toPercent") {
+      newValue = (value / (2 * Math.PI)) * 100;
+    }
+    return newValue;
+  }
 
   const updateGradientType = (value: string) => {
-    setGradient({...gradient, type: value});
+
+    let direction: "toRad" | "toPercent" | "neither";
+
+    if((gradient.type === "radial" || gradient.type === "linear") && value === "conic") {
+      direction = "toRad";
+    } else if (gradient.type === "conic" && (value === "radial" || value === "linear")) {
+      direction = "toPercent";
+    } else {
+      direction = "neither";
+    }
+
+    if(direction === "neither") {
+      setGradient({...gradient, type: value});
+    } else {
+     
+      let newStartValues: {pos: number, index: number}[] = [];
+
+      let newStopValues: {pos: number, index: number}[] = [];
+
+      gradient.startList.forEach(start => {
+        newStartValues.push({pos: percentAngleConversion(start.pos, direction), index: start.index})
+      })
+
+      gradient.stopList.forEach(stop => {
+        newStopValues.push({pos: percentAngleConversion(stop.pos, direction), index: stop.index})
+      })
+      
+      setGradient({...gradient, startList: newStartValues, stopList: newStopValues, type: value});
+    }    
   }
 
   const updateGradientColors = ( index: number, color: string) => {
+
     setGradient({...gradient,  
       colors: gradient.colors.map((singleColor) => 
         singleColor.index === index ? 
@@ -146,18 +189,23 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
         singleColor
       ) 
     })
+
   }
 
   const addColors = (index: number, color: string) => {
-    let newStart = parseInt(gradient.stopList[gradient.stopList.length - 1].stop) > 90 ?
+
+    let newStart = (gradient.colors.length === 0 ? 
+      0 : 
+      gradient.stopList[gradient.stopList.length - 1].pos) > 90 ?
       100 : 
-      parseInt(gradient.stopList[gradient.stopList.length - 1].stop) + 10;
+      gradient.stopList[gradient.stopList.length - 1].pos + 10;
+
     let newStop = newStart > 90 ? 100 : newStart + 10;
+
     setGradient({...gradient, 
       colors: [...gradient.colors, {index: index, color: color}], 
-      startList: [...gradient.startList, {index: index, start: newStart.toString()}],
-      stopList: [...gradient.stopList, {index: index, stop: newStop.toString()}],
-      
+      startList: [...gradient.startList, {index: index, pos: gradient.type === "conic" ? normalizeAngle(newStart) : newStart}],
+      stopList: [...gradient.stopList, {index: index, pos: gradient.type === "conic" ? normalizeAngle(newStop) : newStop}],
     });
   }
 
@@ -169,7 +217,7 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const updateGradientAngle = (angle: number) => {
-    setGradient({...gradient, angle: angle});
+    setGradient({...gradient, angle: normalizeAngle(angle)});
   }
 
   const updateGradientShape = (shape: string) => {
@@ -208,21 +256,21 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
     setGradient({...gradient, size: size});
   }
 
-  const updateGradientStopList = (index: number, stop: string) => {
+  const updateGradientStopList = (index: number, stop: number) => {
     setGradient({...gradient, 
       stopList: gradient.stopList.map(stopmap => 
         stopmap.index === index ? 
-        {...gradient.stopList[index], stop: stop, index: index} : 
+        {...gradient.stopList[index], pos: stop, index: index} : 
         stopmap
       )
     })
   }
 
-  const updateGradientStartList = (index: number, start: string) => {
+  const updateGradientStartList = (index: number, start: number) => {
     setGradient({...gradient, 
       startList: gradient.startList.map(startmap => 
         startmap.index === index ? 
-        {...gradient.startList[index], start: start, index: index} : 
+        {...gradient.startList[index], pos: start, index: index} : 
         startmap
       )
     })

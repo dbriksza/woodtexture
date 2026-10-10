@@ -2,10 +2,13 @@
 import { useState, useRef, useEffect } from 'react';
 
 type AngleSelectorProps = {
-    sendData: (angle: number) => void;
+    sendData: (angle: number, id?: number, startorstop?: "start" | "stop") => void;
+    defaultValue?: number;
+    id?: number;
+    startorstop?: "start" | "stop"
 }
 
-const AngleSelector: React.FC<AngleSelectorProps> = (({sendData}) => {
+const AngleSelector: React.FC<AngleSelectorProps> = (({sendData, defaultValue, id, startorstop}) => {
 
     interface XY {
         x: number;
@@ -14,7 +17,7 @@ const AngleSelector: React.FC<AngleSelectorProps> = (({sendData}) => {
 
     const [xy, setXY] = useState<XY>({x: 100, y: 0});
 
-    const [angle, setAngle] = useState<number>(0);
+    const [angle, setAngle] = useState<number>(defaultValue? defaultValue : 0);
 
     const customAngleRef = useRef<HTMLInputElement>(null);
 
@@ -56,13 +59,20 @@ const AngleSelector: React.FC<AngleSelectorProps> = (({sendData}) => {
 
         let angle = (Math.atan2(y1 - y2, x1 - x2) - Math.PI/2);
 
+        if (angle < 0) {
+            angle += 2 * Math.PI;
+        }
+
         setAngle(angle);
 
         setXY({x: x2 + x1, y: y2 + y1});
     }
 
     useEffect(() => {
-        sendData(angle);
+        let x = 100 + 50 * Math.cos(angle - Math.PI/2);
+        let y = 100 + 50 * Math.sin(angle - Math.PI/2);
+        setXY({x, y})
+        sendData(angle, id!, startorstop!);
     }, [angle])
 
     return (

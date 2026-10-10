@@ -8,21 +8,11 @@ interface Gradient {
     position: {x: number, y: number};
     interpolationMethod: string;
     repeating: boolean;
-    stopList: Stop[];
-    startList: Start[];
+    stopList: {pos: number, index: number}[];
+    startList: {pos: number, index: number}[];
 }
 
 interface Color {
     color: string;
-    index: number;
-}
-
-interface Stop {
-    stop: string;
-    index: number;
-}
-
-interface Start {
-    start: string;
     index: number;
 }
