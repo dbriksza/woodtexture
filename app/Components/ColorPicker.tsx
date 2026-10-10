@@ -12,6 +12,11 @@ export default function ColorPicker() {
         gradientContainer.updateGradientColors(parseInt(event.currentTarget.id), event.currentTarget.value);
     }
 
+    const modifyColorsAlpha = (event: React.ChangeEvent<HTMLInputElement>) => { 
+        let alpha = Math.floor((parseInt(event.currentTarget.value) / 100) * 255).toString(16).padStart(2, '0');
+        gradientContainer.updateGradientColorsAlpha(parseInt(event.currentTarget.id), alpha);
+    }
+
     const modifyColorStopsStop = (event: React.ChangeEvent<HTMLInputElement>) => {
         gradientContainer.updateGradientStopList(parseInt(event.currentTarget.id), parseFloat(event.currentTarget.value));
     }
@@ -58,13 +63,23 @@ export default function ColorPicker() {
                                 Color {color.index}: 
                             </label>
                             <input 
-                                type="color" 
+                                type="color"
                                 key={color.index + "color"} 
                                 id={color.index.toString() + "color"}  
                                 name={color.index.toString() + "color"}
                                 defaultValue={color.color}
                                 onChange={modifyColors}
                             />
+                            <input 
+                                type="range"
+                                key={color.index + "colorAlpha"} 
+                                id={color.index.toString() + "colorAlpha"}  
+                                name={color.index.toString() + "colorAlpha"}
+                                min={0}
+                                max={100}
+                                defaultValue={100}
+                                onChange={modifyColorsAlpha}>
+                            </input>
                             {(gradientContainer.currentGradient.type === "linear" ||  gradientContainer.currentGradient.type === "radial") &&
                             <>
                                 <label htmlFor={color.index.toString() + "start"} className="px-2">Start:</label>

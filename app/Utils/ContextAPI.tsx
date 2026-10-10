@@ -8,6 +8,7 @@ interface GradientContextType {
   currentGradient: Gradient;
   updateGradientType: (value: string) => void;
   updateGradientColors: (index: number, color: string) => void;
+  updateGradientColorsAlpha: (index: number, alpha: string) => void;
   updateGradientAngle: (angle: number) => void;
   updateGradientShape: (shape: string) => void;
   updateGradientSize: (size: string) => void;
@@ -17,19 +18,22 @@ interface GradientContextType {
   updateGradientRepeating: (repeating: boolean) => void;
   updateGradientStartList: (index: number, start: number) => void;
   updateGradientStopList: (index: number, stop: number) => void;
+
   subtractColors: () => void;
+  addColors: (index: number, color: string) => void;
+
   addGradient: () => void;
   changeCurrentGradient: (value: number) => void;
-  addColors: (index: number, color: string) => void;
 }
 
 export const GradientContext = createContext<GradientContextType>({} as GradientContextType);
 
 export const GradientProvider = ({ children }: { children: ReactNode }) => {
 
-  const [gradient, setGradient] = useState<Gradient>({
+  const baseGradient = {
+    index: 0,
     type: "linear",
-    colors: [{color: "#f58224", index: 0}],
+    colors: [{color: "#f58224", alpha: "ff", index: 0}],
     angle: 0,
     shape: "circle",
     size: "farthest-corner",
@@ -39,25 +43,13 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
     repeating: false,
     startList: [{pos: 0, index: 0}],
     stopList: [{pos: 10, index: 0}]
-  });
+  }
 
-  const [gradientArray, setGradientArray] = useState<Gradient[]>([
-    {
-      type: "linear",
-      colors: [{color: "#f58224", index: 0}],
-      angle: 0,
-      shape: "circle",
-      size: "farthest-corner",
-      shapeSize: {x: 50, y: 10},
-      position: {x: 50, y: 50},
-      interpolationMethod: "in srgb",
-      repeating: false,
-      startList: [{pos: 10, index: 0}],
-      stopList: [{pos: 10, index: 0}]
-    }
-  ]);
+  const [gradient, setGradient] = useState<Gradient>(baseGradient);
 
-  const [currentGradient, setCurrentGradient] = useState<number>(0)
+  const [gradientArray, setGradientArray] = useState<Gradient[]>([baseGradient]);
+
+  const [currentGradientInd, setCurrentGradientInd] = useState<number>(0)
 
   const [style, setStyle] = useState<string>("");
 
@@ -93,7 +85,7 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
       let colorsAndStops = [];
 
       for(let i = 0; i < grad.colors.length; i++){
-          colorsAndStops.push(grad.colors[i].color + " ");
+          colorsAndStops.push(grad.colors[i].color + grad.colors[i].alpha + " ");
           colorsAndStops.push(grad.startList[i].pos + (grad.type === "conic" ? "rad " : "% "));
           colorsAndStops.push(grad.stopList[i].pos + (grad.type === "conic" ? "rad " : "% "));
           colorsAndStops.push(", ");
@@ -116,15 +108,17 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
     setStyle(newStyle);
   }
 
-  useEffect(() => {
-
+  const updateGradientArray = () => {
     setGradientArray([
       ...gradientArray.map((grad, i) => 
-        i === currentGradient ? 
+        i === currentGradientInd ? 
       {...grad, ...gradient} : 
       grad)
     ]);
+  }
 
+  useEffect(() => {
+    updateGradientArray();
   }, [gradient]);
 
   useEffect(() => {
@@ -181,11 +175,23 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const updateGradientColors = ( index: number, color: string) => {
-
+    
     setGradient({...gradient,  
       colors: gradient.colors.map((singleColor) => 
         singleColor.index === index ? 
-        {...singleColor, ...{index: index, color: color}} : 
+        {...singleColor, ...{color: color}} : 
+        singleColor
+      ) 
+    })
+
+  }
+
+    const updateGradientColorsAlpha = ( index: number, alpha: string) => {
+    
+    setGradient({...gradient,  
+      colors: gradient.colors.map((singleColor) => 
+        singleColor.index === index ? 
+        {...singleColor, ...{alpha: alpha}} : 
         singleColor
       ) 
     })
@@ -203,7 +209,7 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
     let newStop = newStart > 90 ? 100 : newStart + 10;
 
     setGradient({...gradient, 
-      colors: [...gradient.colors, {index: index, color: color}], 
+      colors: [...gradient.colors, {index: index, color: color, alpha: "ff"}], 
       startList: [...gradient.startList, {index: index, pos: gradient.type === "conic" ? normalizeAngle(newStart) : newStart}],
       stopList: [...gradient.stopList, {index: index, pos: gradient.type === "conic" ? normalizeAngle(newStop) : newStop}],
     });
@@ -277,32 +283,38 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const addGradient = () => {
-    setGradientArray([...gradientArray, gradient]);
-    setGradient(gradientArray[gradientArray.length - 1]);
-    setCurrentGradient(gradientArray.length - 1);
+    updateGradientArray();
+    setGradientArray([...gradientArray, {...baseGradient, index: gradientArray.length}]);
+    changeCurrentGradient(gradientArray.length - 1)
+    setCurrentGradientInd(gradientArray.length - 1);
   }
 
   const changeCurrentGradient = (value: number) => {
-    setGradient(gradientArray[value]);
+    setGradient(gradientArray.filter((item) => item.index === value)[0]);
+    setCurrentGradientInd(value);
   }
 
   const value: GradientContextType = {
     gradients: gradientArray,
     style: style,
     currentGradient: gradient,
+
     updateGradientType,
     updateGradientColors,
+    updateGradientColorsAlpha,
     updateGradientAngle,
     updateGradientShape,
+    updateGradientSize,
     updateGradientPosition,
     updateGradientShapeSize,
     updateGradientInterpolationMethod,
     updateGradientRepeating,
     updateGradientStopList,
     updateGradientStartList,
+
     subtractColors,
     addColors,
-    updateGradientSize,
+
     addGradient,
     changeCurrentGradient,
   }

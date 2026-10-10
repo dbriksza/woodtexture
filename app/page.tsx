@@ -4,6 +4,7 @@ import DirectionSelect from "./Components/DirectionSelect";
 import StyleDisplay from "./Components/StyleDisplay";
 import InterpolationEditor from "./Components/InterpolationEditor";
 import RadialProperties from "./Components/RadialProperties";
+import GradientTypeSelect from "./Components/GradientTypeSelect";
 import { GradientProvider } from "./Utils/ContextAPI";
 
 export default function Home() {
@@ -13,6 +14,7 @@ export default function Home() {
         <GradientProvider>
           <ColorPicker/>
           <GradientSelect/>
+          <GradientTypeSelect/>
           <InterpolationEditor/>
           <DirectionSelect/>
           <RadialProperties/>

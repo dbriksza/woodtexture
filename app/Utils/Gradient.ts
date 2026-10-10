@@ -1,4 +1,5 @@
 interface Gradient {
+    index: number;
     type: string;
     colors: Color[];
     angle: number;
@@ -14,5 +15,6 @@ interface Gradient {
 
 interface Color {
     color: string;
+    alpha: string;
     index: number;
 }
