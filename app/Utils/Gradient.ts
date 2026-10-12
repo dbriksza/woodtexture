@@ -1,5 +1,5 @@
 interface Gradient {
-    index: number;
+    id: number;
     type: string;
     colors: Color[];
     angle: number;
@@ -9,12 +9,12 @@ interface Gradient {
     position: {x: number, y: number};
     interpolationMethod: string;
     repeating: boolean;
-    stopList: {pos: number, index: number}[];
-    startList: {pos: number, index: number}[];
+    stopList: {pos: number, id: number}[];
+    startList: {pos: number, id: number}[];
 }
 
 interface Color {
     color: string;
     alpha: string;
-    index: number;
+    id: number;
 }

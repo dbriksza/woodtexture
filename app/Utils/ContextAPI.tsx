@@ -7,8 +7,8 @@ interface GradientContextType {
   style: string;
   currentGradient: Gradient;
   updateGradientType: (value: string) => void;
-  updateGradientColors: (index: number, color: string) => void;
-  updateGradientColorsAlpha: (index: number, alpha: string) => void;
+  updateGradientColors: (id: number, color: string) => void;
+  updateGradientColorsAlpha: (id: number, alpha: string) => void;
   updateGradientAngle: (angle: number) => void;
   updateGradientShape: (shape: string) => void;
   updateGradientSize: (size: string) => void;
@@ -16,14 +16,16 @@ interface GradientContextType {
   updateGradientShapeSize: (xory: "x" | "y" | "xy", value1: number, value2?: number) => void;
   updateGradientInterpolationMethod: (interpMethod: string) => void;
   updateGradientRepeating: (repeating: boolean) => void;
-  updateGradientStartList: (index: number, start: number) => void;
-  updateGradientStopList: (index: number, stop: number) => void;
+  updateGradientStartList: (id: number, start: number) => void;
+  updateGradientStopList: (id: number, stop: number) => void;
 
   subtractColors: () => void;
-  addColors: (index: number, color: string) => void;
+  addColors: (id: number, color: string) => void;
 
   addGradient: () => void;
   changeCurrentGradient: (value: number) => void;
+
+  normalizeStartStop: () => void;
 }
 
 export const GradientContext = createContext<GradientContextType>({} as GradientContextType);
@@ -31,9 +33,9 @@ export const GradientContext = createContext<GradientContextType>({} as Gradient
 export const GradientProvider = ({ children }: { children: ReactNode }) => {
 
   const baseGradient = {
-    index: 0,
+    id: 0,
     type: "linear",
-    colors: [{color: "#f58224", alpha: "ff", index: 0}],
+    colors: [{color: "#f58224", alpha: "ff", id: 0}],
     angle: 0,
     shape: "circle",
     size: "farthest-corner",
@@ -41,8 +43,8 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
     position: {x: 50, y: 50},
     interpolationMethod: "in srgb",
     repeating: false,
-    startList: [{pos: 0, index: 0}],
-    stopList: [{pos: 10, index: 0}]
+    startList: [{pos: 0, id: 0}],
+    stopList: [{pos: 10, id: 0}]
   }
 
   const [gradient, setGradient] = useState<Gradient>(baseGradient);
@@ -137,7 +139,7 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
     if(conversionType === "toRad"){
       newValue = (value / 100) * 2 * Math.PI;
     } else if (conversionType === "toPercent") {
-      newValue = (value / (2 * Math.PI)) * 100;
+      newValue = Math.round((value / (2 * Math.PI)) * 100);
     }
     return newValue;
   }
@@ -158,67 +160,88 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
       setGradient({...gradient, type: value});
     } else {
      
-      let newStartValues: {pos: number, index: number}[] = [];
+      let newStartValues: {pos: number, id: number}[] = [];
 
-      let newStopValues: {pos: number, index: number}[] = [];
+      let newStopValues: {pos: number, id: number}[] = [];
 
       gradient.startList.forEach(start => {
-        newStartValues.push({pos: percentAngleConversion(start.pos, direction), index: start.index})
+        newStartValues.push({pos: percentAngleConversion(start.pos, direction), id: start.id})
       })
 
       gradient.stopList.forEach(stop => {
-        newStopValues.push({pos: percentAngleConversion(stop.pos, direction), index: stop.index})
+        newStopValues.push({pos: percentAngleConversion(stop.pos, direction), id: stop.id})
       })
       
       setGradient({...gradient, startList: newStartValues, stopList: newStopValues, type: value});
     }    
   }
 
-  const updateGradientColors = ( index: number, color: string) => {
+  const normalizeStartStop = () => {
+    let numColors: number = gradient.colors.length;
+    let percentage: number = (1 / numColors) * 100;
+    let newStartValues: {pos: number, id: number}[] = [];
+    let newStopValues: {pos: number, id: number}[] = [];
+    for(let i = 0; i < numColors; i++){
+      if(gradient.type === "conic"){
+        newStartValues.push({pos: percentAngleConversion(i * percentage, "toRad"), id: i})
+        newStopValues.push({pos: percentAngleConversion((i + 1) * percentage, "toRad"), id: i})
+      } else {
+        newStartValues.push({pos: Math.round(i * percentage), id: i})
+        newStopValues.push({pos: Math.round((i + 1) * percentage), id: i})
+      }
+    }
+    setGradient({...gradient, startList: newStartValues, stopList: newStopValues});
+  }
+
+  const updateGradientColors = ( id: number, color: string) => {
     
     setGradient({...gradient,  
       colors: gradient.colors.map((singleColor) => 
-        singleColor.index === index ? 
+        singleColor.id === id ? 
         {...singleColor, ...{color: color}} : 
         singleColor
       ) 
     })
-
   }
 
-    const updateGradientColorsAlpha = ( index: number, alpha: string) => {
+    const updateGradientColorsAlpha = ( id: number, alpha: string) => {
     
     setGradient({...gradient,  
       colors: gradient.colors.map((singleColor) => 
-        singleColor.index === index ? 
+        singleColor.id === id ? 
         {...singleColor, ...{alpha: alpha}} : 
         singleColor
       ) 
     })
-
   }
 
-  const addColors = (index: number, color: string) => {
+  const addColors = (id: number, color: string) => {
 
-    let newStart = (gradient.colors.length === 0 ? 
-      0 : 
-      gradient.stopList[gradient.stopList.length - 1].pos) > 90 ?
-      100 : 
-      gradient.stopList[gradient.stopList.length - 1].pos + 10;
+    let newStart: number;
+
+    if(gradient.colors.length === 0) {
+      newStart = 0;
+    } else {
+      if(gradient.stopList[gradient.stopList.length - 1].pos > 90) {
+        newStart = 100
+      } else {
+        newStart = gradient.stopList[gradient.stopList.length - 1].pos + 10
+      }
+    }
 
     let newStop = newStart > 90 ? 100 : newStart + 10;
 
     setGradient({...gradient, 
-      colors: [...gradient.colors, {index: index, color: color, alpha: "ff"}], 
-      startList: [...gradient.startList, {index: index, pos: gradient.type === "conic" ? normalizeAngle(newStart) : newStart}],
-      stopList: [...gradient.stopList, {index: index, pos: gradient.type === "conic" ? normalizeAngle(newStop) : newStop}],
+      colors: [...gradient.colors, {id: id, color: color, alpha: "ff"}], 
+      startList: [...gradient.startList, {id: id, pos: gradient.type === "conic" ? normalizeAngle(newStart) : newStart}],
+      stopList: [...gradient.stopList, {id: id, pos: gradient.type === "conic" ? normalizeAngle(newStop) : newStop}],
     });
   }
 
   const subtractColors = () => {
     setGradient({...gradient, 
-      colors: gradient.colors.filter((item) => item.index !== gradient.colors.length - 1),
-      stopList: gradient.stopList.filter((item) => item.index !== gradient.stopList.length - 1)
+      colors: gradient.colors.filter((item) => item.id !== gradient.colors.length - 1),
+      stopList: gradient.stopList.filter((item) => item.id !== gradient.stopList.length - 1)
     })
   }
 
@@ -262,21 +285,21 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
     setGradient({...gradient, size: size});
   }
 
-  const updateGradientStopList = (index: number, stop: number) => {
+  const updateGradientStopList = (id: number, stop: number) => {
     setGradient({...gradient, 
       stopList: gradient.stopList.map(stopmap => 
-        stopmap.index === index ? 
-        {...gradient.stopList[index], pos: stop, index: index} : 
+        stopmap.id === id ? 
+        {...gradient.stopList[id], pos: stop, id: id} : 
         stopmap
       )
     })
   }
 
-  const updateGradientStartList = (index: number, start: number) => {
+  const updateGradientStartList = (id: number, start: number) => {
     setGradient({...gradient, 
       startList: gradient.startList.map(startmap => 
-        startmap.index === index ? 
-        {...gradient.startList[index], pos: start, index: index} : 
+        startmap.id === id ? 
+        {...gradient.startList[id], pos: start, id: id} : 
         startmap
       )
     })
@@ -284,13 +307,13 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
 
   const addGradient = () => {
     updateGradientArray();
-    setGradientArray([...gradientArray, {...baseGradient, index: gradientArray.length}]);
+    setGradientArray([...gradientArray, {...baseGradient, id: gradientArray.length}]);
     changeCurrentGradient(gradientArray.length - 1)
     setCurrentGradientInd(gradientArray.length - 1);
   }
 
   const changeCurrentGradient = (value: number) => {
-    setGradient(gradientArray.filter((item) => item.index === value)[0]);
+    setGradient(gradientArray.filter((item) => item.id === value)[0]);
     setCurrentGradientInd(value);
   }
 
@@ -317,6 +340,8 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
 
     addGradient,
     changeCurrentGradient,
+
+    normalizeStartStop,
   }
 
   return (

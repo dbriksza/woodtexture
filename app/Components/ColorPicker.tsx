@@ -42,6 +42,128 @@ export default function ColorPicker() {
         gradientContainer.subtractColors();
     }
 
+    const normalize = () => {
+        gradientContainer.normalizeStartStop();
+    }
+
+    const mapColors = (): React.ReactNode => {
+        return gradientContainer.currentGradient.colors.map((color) => 
+            <div key={color.id + "colorContainer" + gradientContainer.currentGradient.id} className="border-b mb-2">
+                <label 
+                    htmlFor={color.id.toString() + "color" + gradientContainer.currentGradient.id} 
+                    key={color.id +"label" + gradientContainer.currentGradient.id} 
+                    className="w-[7ch] block"
+                >
+                    Color {color.id}: 
+                </label>
+                <input 
+                    type="color"
+                    key={color.id + "color" + gradientContainer.currentGradient.id} 
+                    id={color.id.toString() + "color" + gradientContainer.currentGradient.id}  
+                    name={color.id.toString() + "color" + gradientContainer.currentGradient.id}
+                    defaultValue={color.color}
+                    onChange={modifyColors}
+                />
+                <label 
+                    htmlFor={color.id.toString() + "colorAlpha" + gradientContainer.currentGradient.id} 
+                    key={color.id + "labelAlpha"} 
+                    className="w-[7ch] block">
+                    Alpha
+                </label>
+                <input 
+                    type="range"
+                    key={color.id + "colorAlpha" + gradientContainer.currentGradient.id} 
+                    id={color.id.toString() + "colorAlpha" + gradientContainer.currentGradient.id}  
+                    name={color.id.toString() + "colorAlpha" + gradientContainer.currentGradient.id}
+                    min={0}
+                    max={100}
+                    defaultValue={100}
+                    onChange={modifyColorsAlpha}>
+                </input>
+            </div>
+        )
+    }
+
+    const mapStarts = (): React.ReactNode => {
+        if(gradientContainer.currentGradient.type === "linear" ||  gradientContainer.currentGradient.type === "radial"){
+            return (
+                gradientContainer.currentGradient.startList.map((start) => 
+                <div key={start.id + "colorStart" + gradientContainer.currentGradient.id} className="border-b mb-2">
+                    <label htmlFor={start.id.toString() + "start" + gradientContainer.currentGradient.id} className="px-2">Start:</label>
+                    <input 
+                        type="number" 
+                        key={start.id + "start" + gradientContainer.currentGradient.id}
+                        id={start.id.toString() + "start" + gradientContainer.currentGradient.id} 
+                        name={start.id.toString() + "start" + gradientContainer.currentGradient.id} 
+                        onChange={modifyColorStopsStart}
+                        min="0" max="100" value={start.pos}>
+                    </input>
+                </div>
+                )
+            )
+        } else if(gradientContainer.currentGradient.type === "conic"){
+            return (
+                gradientContainer.currentGradient.startList.map((start) => 
+                <div key={start.id + "colorStop" + gradientContainer.currentGradient.id} className="border-b mb-2">
+                    <label>Start</label>
+                    <AngleSelector 
+                        key={start.id + "start" + gradientContainer.currentGradient.id}
+                        sendData={handleData}
+                        id={start.id.toString() + gradientContainer.currentGradient.id}
+                        startorstop="start"
+                        value={start.pos}
+                    >
+                    </AngleSelector>
+                </div>
+                )
+            )
+        } else {
+            return (
+                <></>
+            )
+        }
+    }
+
+    const mapStops = (): React.ReactNode => {
+        if(gradientContainer.currentGradient.type === "linear" ||  gradientContainer.currentGradient.type === "radial") {
+            return(
+                gradientContainer.currentGradient.stopList.map((stop) => 
+                <div key={stop.id + "colorStop" + gradientContainer.currentGradient.id} className="border-b mb-2">
+                    <label htmlFor={stop.id.toString() + "end" + gradientContainer.currentGradient.id} className="px-2">End:</label>
+                    <input 
+                        type="number" 
+                        key={stop.id + "end" + gradientContainer.currentGradient.id}
+                        id={stop.id.toString() + "end" + gradientContainer.currentGradient.id} 
+                        name={stop.id.toString() + "end" + gradientContainer.currentGradient.id} 
+                        onChange={modifyColorStopsStop}
+                        min="0" max="100" value={stop.pos}>
+                    </input>
+                </div>
+                )
+            )
+        } else if (gradientContainer.currentGradient.type === "conic"){
+            return (
+                gradientContainer.currentGradient.stopList.map((stop) => 
+                <div key={stop.id + "colorStop" + gradientContainer.currentGradient.id} className="border-b mb-2">
+                    <label>Stop</label>
+                    <AngleSelector 
+                        key={stop.id + "stop" + gradientContainer.currentGradient.id}
+                        sendData={handleData}
+                        id={stop.id.toString() + gradientContainer.currentGradient.id}
+                        startorstop="stop"
+                        value={stop.pos}
+                    >
+                    </AngleSelector>
+                </div>
+                )
+            )
+        } else {
+            return (
+                <></>
+            )
+        }
+    }
+
     return (
         <div className="flex flex-col bg-zinc-50 font-sans dark:bg-black">
             <div className="flex flex-col">
@@ -51,80 +173,20 @@ export default function ColorPicker() {
                 <button className="border-[2px] rounded-md px-[5px] shadow-md my-2" onClick={subtractColors}>
                     Remove Color
                 </button>
+                <button className="border-[2px] rounded-md px-[5px] shadow-md my-2" onClick={normalize}>
+                    Normalize Starts/Stops
+                </button>
                 <div>
-                    <fieldset>
-                    {gradientContainer.currentGradient.colors.map((color) => 
-                        <div key={color.index + "colorContainer"} className="border-b shadow-md mb-2">
-                            <label 
-                                htmlFor={color.index.toString() + "color"} 
-                                key={color.index +"label"} 
-                                className="w-[7ch] block"
-                            >
-                                Color {color.index}: 
-                            </label>
-                            <input 
-                                type="color"
-                                key={color.index + "color"} 
-                                id={color.index.toString() + "color"}  
-                                name={color.index.toString() + "color"}
-                                defaultValue={color.color}
-                                onChange={modifyColors}
-                            />
-                            <input 
-                                type="range"
-                                key={color.index + "colorAlpha"} 
-                                id={color.index.toString() + "colorAlpha"}  
-                                name={color.index.toString() + "colorAlpha"}
-                                min={0}
-                                max={100}
-                                defaultValue={100}
-                                onChange={modifyColorsAlpha}>
-                            </input>
-                            {(gradientContainer.currentGradient.type === "linear" ||  gradientContainer.currentGradient.type === "radial") &&
-                            <>
-                                <label htmlFor={color.index.toString() + "start"} className="px-2">Start:</label>
-                                <input 
-                                    type="number" 
-                                    key={color.index + "start"}
-                                    id={color.index.toString() + "start"} 
-                                    name={color.index.toString() + "start"} 
-                                    onChange={modifyColorStopsStart}
-                                    min="0" max="100" defaultValue={gradientContainer.currentGradient.startList[color.index].pos}>
-                                </input>
-                                <label htmlFor={color.index.toString() + "end"} className="px-2">End:</label>
-                                <input 
-                                    type="number" 
-                                    key={color.index + "end"}
-                                    id={color.index.toString() + "end"} 
-                                    name={color.index.toString() + "end"} 
-                                    onChange={modifyColorStopsStop}
-                                    min="0" max="100" defaultValue={gradientContainer.currentGradient.stopList[color.index].pos}>
-                                </input>
-                            </>}
-                            {gradientContainer.currentGradient.type === "conic" &&
-                            <>
-                                <label>Start</label>
-                                <AngleSelector 
-                                    key={color.index + "start"}
-                                    sendData={handleData}
-                                    id={color.index}
-                                    startorstop="start"
-                                    defaultValue={gradientContainer.currentGradient.startList[color.index].pos}
-                                >
-                                </AngleSelector>
-                                <label>Stop</label>
-                                <AngleSelector 
-                                    key={color.index + "end"}
-                                    sendData={handleData}
-                                    id={color.index}
-                                    startorstop="stop"
-                                    defaultValue={gradientContainer.currentGradient.stopList[color.index].pos}
-                                >
-                                </AngleSelector>
-                            </>
-                            }
+                    <fieldset className="flex flex-row justify-between">
+                        <div className="flex flex-col justify-around max-w-[33%]">
+                        {mapColors()}
                         </div>
-                    )}
+                        <div className="flex flex-col justify-around max-w-[33%]">
+                            {mapStarts()}
+                        </div>
+                        <div className="flex flex-col justify-around max-w-[33%]">
+                            {mapStops()}
+                        </div>
                     </fieldset>
                 </div>  
             </div>

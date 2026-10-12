@@ -1,6 +1,6 @@
 'use client'
 import AngleSelector from './AngleSelector';
-import { useState, useRef, useEffect, use } from 'react';
+import { use } from 'react';
 import { GradientContext } from "../Utils/ContextAPI"
 
 export default function DirectionSelect() {
@@ -13,7 +13,7 @@ export default function DirectionSelect() {
 
     return (
         <>{gradientContainer.currentGradient.type === "linear" &&
-            <AngleSelector sendData={handleData}/>
+            <AngleSelector sendData={handleData} value={gradientContainer.currentGradient.angle}/>
         }</>
     )
 }
