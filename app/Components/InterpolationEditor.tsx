@@ -37,7 +37,7 @@ export default function InterpolationEditor() {
         <div>
             <fieldset className="flex flex-row justify-around">
                 <div className="flex flex-col">
-                    <p>Interpolation Shape</p>
+                    <p>Interpolation Shape:</p>
                     <div className="flex flex-col">
                         <label>
                             <input type="radio" name="interpolationMethodShape" value="rectangular-color-space" 
@@ -50,7 +50,7 @@ export default function InterpolationEditor() {
                     </div>
                     {interpMethodShape === "polar-color-space" && <>
                         <div className="flex flex-col">
-                            <p>Hue Interpolation Method</p>
+                            <p>Hue Interpolation Method:</p>
                             <label>
                                 <input type="radio" name="hueInterpolationMethod" value="shorter" 
                                 onChange={changeHueInterpolationMethod} defaultChecked/> Shorter
@@ -71,7 +71,7 @@ export default function InterpolationEditor() {
                     </>}
                 </div>
                 <div className="flex flex-col">
-                    <p>Interpolation Color Space</p>
+                    <p>Interpolation Color Space:</p>
                     {interpMethodShape === "rectangular-color-space" && <>
                         <label>
                             <input type="radio" name="interpolationMethodSpace" value="srgb"

@@ -1,5 +1,5 @@
 'use client'
-import AngleSelector from './AngleSelector';
+import AngleSelector from './HelperComponents/AngleSelector';
 import { use } from 'react';
 import { GradientContext } from "../Utils/ContextAPI"
 

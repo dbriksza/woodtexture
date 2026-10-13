@@ -15,7 +15,8 @@ export default function GradientTypeSelect() {
 
     return (
         <div className="flex flex-row justify-around">
-            <fieldset className="flex flex-col">
+            <fieldset className="flex flex-col min-w-[100px]">
+                <p>Select Gradient Type:</p>
                 <label>
                     <input type="radio" name="gradientType" value="linear" onChange={changeGradientType} defaultChecked/> Linear
                 </label>

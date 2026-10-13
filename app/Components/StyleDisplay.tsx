@@ -1,8 +1,8 @@
 'use client'
-import { use, useState, useEffect } from "react"
+import { use, useState, useEffect, useRef } from "react"
 import { GradientContext } from "../Utils/ContextAPI"
 
-import ToolTip from "./ToolTip";
+import ToolTip from "./HelperComponents/ToolTip";
 
 export default function StyleDisplay() {
 
@@ -11,6 +11,8 @@ export default function StyleDisplay() {
     const [mouseDown, setMouseDown] = useState<boolean>(false);
 
     const [timer, setTimer] = useState<boolean>(false);
+
+    const timerHolder = useRef<ReturnType<typeof setInterval> | null>(null);
 
     const mosueUpEvent = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         setMouseDown(false)
@@ -42,10 +44,24 @@ export default function StyleDisplay() {
     }
 
     useEffect(() => {
-        setTimeout(() => {
-            setTimer(!timer)
-        }, 10)
-    }, [timer])
+        if(mouseDown){
+            setTimer(true);
+            let abstractedState = timer;
+            if (timerHolder.current) {
+                clearInterval(timerHolder.current);
+                timerHolder.current = null;
+            }
+            timerHolder.current = setInterval(() => {
+                setTimer(!abstractedState);
+                abstractedState = !abstractedState;
+            }, 10);
+        } else {
+            if (timerHolder.current) {
+                clearInterval(timerHolder.current);
+            }
+            timerHolder.current = null;
+        }
+    }, [mouseDown])
 
     return (
         <div>

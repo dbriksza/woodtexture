@@ -2,7 +2,7 @@
 import { use, useRef, useEffect } from "react"
 import { GradientContext } from "../Utils/ContextAPI"
 
-import ToolTip from "./ToolTip";
+import ToolTip from "./HelperComponents/ToolTip";
 
 export default function GradientSelect() {
 

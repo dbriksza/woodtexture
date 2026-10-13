@@ -1,9 +1,7 @@
 import ColorPicker from "./Components/ColorPicker";
 import GradientSelect from "./Components/GradientSelect";
-import DirectionSelect from "./Components/DirectionSelect";
 import StyleDisplay from "./Components/StyleDisplay";
 import InterpolationEditor from "./Components/InterpolationEditor";
-import RadialProperties from "./Components/RadialProperties";
 import GradientTypeSelect from "./Components/GradientTypeSelect";
 import { GradientProvider } from "./Utils/ContextAPI";
 

@@ -2,8 +2,8 @@
 import { use } from "react"
 import { GradientContext } from "../Utils/ContextAPI"
 
-import AngleSelector from "./AngleSelector";
-import ToolTip from "./ToolTip";
+import AngleSelector from "./HelperComponents/AngleSelector";
+import ToolTip from "./HelperComponents/ToolTip";
 
 export default function ColorPicker() {
 
@@ -76,7 +76,7 @@ export default function ColorPicker() {
 
     const mapColors = (): React.ReactNode => {
         return gradientContainer.currentGradient.colors.map((color) => 
-            <div key={color.id + "colorContainer" + gradientContainer.currentGradient.id} className="border-b mb-2">
+            <div key={color.id + "colorContainer" + gradientContainer.currentGradient.id} className="mb-2 before:absolute before:right-[-300px] before:border-b">
                 <label 
                     htmlFor={color.id.toString() + "color" + gradientContainer.currentGradient.id} 
                     key={color.id +"label" + gradientContainer.currentGradient.id} 
