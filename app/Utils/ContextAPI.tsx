@@ -75,22 +75,22 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
 
       switch(grad.type){
         case "linear":
-          constructedStyle.push(gradient.repeating ? "repeating-linear-gradient(": "linear-gradient(");
+          constructedStyle.push(grad.repeating ? "repeating-linear-gradient(": "linear-gradient(");
           constructedStyle.push(grad.angle + "rad ");
           break;
         case "radial":
-          constructedStyle.push(gradient.repeating ? "repeating-radial-gradient(" : "radial-gradient(");
+          constructedStyle.push(grad.repeating ? "repeating-radial-gradient(" : "radial-gradient(");
           constructedStyle.push(grad.shape + " ");
           if(grad.shape === "ellipse"){
-            constructedStyle.push(grad.shapeSize.x + gradient.units + " " + grad.shapeSize.y + gradient.units + " " );
+            constructedStyle.push(grad.shapeSize.x + grad.units + " " + grad.shapeSize.y + grad.units + " " );
           } else {
             constructedStyle.push(grad.size + " ")
           }
-          constructedStyle.push("at " + grad.position.x + gradient.units + " " + grad.position.y + gradient.units + " ");
+          constructedStyle.push("at " + grad.position.x + grad.units + " " + grad.position.y + gradient.units + " ");
           // constructedStyle.push(gradient.size + " ");
           break;
         case "conic":
-          constructedStyle.push(gradient.repeating ? "repeating-conic-gradient(" : "conic-gradient(");
+          constructedStyle.push(grad.repeating ? "repeating-conic-gradient(" : "conic-gradient(");
           break;
       };
 
