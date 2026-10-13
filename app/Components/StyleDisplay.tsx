@@ -2,6 +2,8 @@
 import { use, useState, useEffect } from "react"
 import { GradientContext } from "../Utils/ContextAPI"
 
+import ToolTip from "./ToolTip";
+
 export default function StyleDisplay() {
 
     const gradientContainer = use(GradientContext);
@@ -47,6 +49,7 @@ export default function StyleDisplay() {
 
     return (
         <div>
+            <ToolTip helpText="The CSS style is above, the rendered style is shown below"></ToolTip>
             <textarea className="min-h-[200px] min-w-[400px]" readOnly value={gradientContainer.style}></textarea>
             <div 
                 className="h-[200px] w-[200px] resize max-h-[100vh] max-w-[100vw] border overflow-auto mb-[10vh]" 

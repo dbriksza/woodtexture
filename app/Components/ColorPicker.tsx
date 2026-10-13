@@ -3,6 +3,7 @@ import { use } from "react"
 import { GradientContext } from "../Utils/ContextAPI"
 
 import AngleSelector from "./AngleSelector";
+import ToolTip from "./ToolTip";
 
 export default function ColorPicker() {
 
@@ -202,10 +203,12 @@ export default function ColorPicker() {
                 </button>
                 <button className="border-[2px] rounded-md px-[5px] shadow-md my-2" onClick={normalize}>
                     Normalize Starts/Stops
+                    <ToolTip helpText="Sets all Stops/Starts to be evenly spaced and to fill entire container"></ToolTip>
                 </button>
                 <label 
                     htmlFor="allAlpha">
                     Set All Alpha
+                    <ToolTip helpText="Sets Alpha for all colors on this gradient. If the colors have different values, this slider will show the highest value."></ToolTip>
                 </label>
                 <input 
                     type="range" 
@@ -262,7 +265,10 @@ export default function ColorPicker() {
                         max={100}
                         defaultValue={0}>
                     </input>
-                    <button type="submit" className="border-[2px] rounded-md px-[5px] shadow-md my-2">Shift Stops</button>
+                    <button type="submit" className="border-[2px] rounded-md px-[5px] shadow-md my-2">
+                        Shift Stops 
+                        <ToolTip helpText="Shifts all stops. Use negative values for the opposite direction."></ToolTip>
+                    </button>
                 </form>
                 <div>
                     <fieldset className="flex flex-row justify-between">

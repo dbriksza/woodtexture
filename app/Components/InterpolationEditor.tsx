@@ -35,7 +35,7 @@ export default function InterpolationEditor() {
 
     return (
         <div>
-            <fieldset className="flex flex-row">
+            <fieldset className="flex flex-row justify-around">
                 <div className="flex flex-col">
                     <p>Interpolation Shape</p>
                     <div className="flex flex-col">

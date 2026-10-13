@@ -13,7 +13,9 @@ export default function DirectionSelect() {
 
     return (
         <>{gradientContainer.currentGradient.type === "linear" &&
-            <AngleSelector sendData={handleData} value={gradientContainer.currentGradient.angle}/>
+            <div className="max-w-[400px]">
+                <AngleSelector sendData={handleData} value={gradientContainer.currentGradient.angle}/>
+            </div>
         }</>
     )
 }

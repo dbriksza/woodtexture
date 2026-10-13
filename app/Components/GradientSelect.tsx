@@ -2,6 +2,8 @@
 import { use, useRef, useEffect } from "react"
 import { GradientContext } from "../Utils/ContextAPI"
 
+import ToolTip from "./ToolTip";
+
 export default function GradientSelect() {
 
     const gradientContainer = use(GradientContext);
@@ -54,8 +56,10 @@ export default function GradientSelect() {
         <div>
             <button className="border-[2px] rounded-md px-[5px] shadow-md my-2" onClick={addGradient}>
                     Add Gradient
+                    <ToolTip helpText="Add a new gradient to edit"></ToolTip>
             </button>
             <div ref={gradientContainerDiv} id="gradientSelect" className="border p-2 m-2 w-[150px]">
+                <ToolTip helpText="Reorder Gradients by dragging and dropping them. The top most gradient in the list is on top of all other gradients, so you may have to change opacity to see underlying gradients. The current Gradient is highlighted"></ToolTip>
                 {gradientContainer.gradients.map((gradient, index) => 
                     <div key={index} data-value={gradient.id} data-current-index={index} onClick={changeCurrentGradient} 
                     className={isCurrent(gradient.id) ? "border w-[100px]" : ""}

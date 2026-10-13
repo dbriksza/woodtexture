@@ -9,17 +9,17 @@ import { GradientProvider } from "./Utils/ContextAPI";
 
 export default function Home() {
   return (
-    <div className="flex flex-col bg-zinc-50 font-sans dark:bg-black w-full h-full">
+    <div className="flex flex-col bg-zinc-50 font-sans dark:bg-black w-full h-full pt-4">
       <main>
         <GradientProvider>
-          <GradientSelect/>
-          <div className="w-full h-full grid grid-cols-2 gap-4 px-16 bg-white dark:bg-black items-start">
+          <div className="flex flex-row justify-around">
+            <GradientSelect/>
             <ColorPicker/>
             <StyleDisplay/>
+          </div>
+          <div className="w-full h-full grid grid-cols-2 gap-4 px-16 bg-white dark:bg-black items-start">
             <GradientTypeSelect/>
             <InterpolationEditor/>
-            <DirectionSelect/>
-            <RadialProperties/>
           </div>
         </GradientProvider>
       </main>
