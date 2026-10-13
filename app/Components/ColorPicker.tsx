@@ -46,6 +46,33 @@ export default function ColorPicker() {
         gradientContainer.normalizeStartStop();
     }
 
+    const entireGradientAlpha = (event: React.ChangeEvent<HTMLInputElement>) => {
+        console.log(event.currentTarget.value)
+        let alpha = Math.floor((parseInt(event.currentTarget.value) / 100) * 255).toString(16).padStart(2, '0');
+        gradientContainer.setAllAlpha(alpha);
+    }
+
+    const addSpaceBetween = (event: React.ChangeEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget)
+        let space = Object.fromEntries(data.entries()).spaceBetween;
+        gradientContainer.addSpaceBetweenStops(parseInt(space as string))
+    }
+
+    const removeSpaceBetween = (event: React.ChangeEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget)
+        let space = Object.fromEntries(data.entries()).spaceBetween;
+        gradientContainer.addSpaceBetweenStops(-parseInt(space as string))
+    }
+
+    const shiftStops = (event: React.ChangeEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget)
+        let space = Object.fromEntries(data.entries()).spaceBetween;
+        gradientContainer.shiftStops(parseInt(space as string))
+    }
+
     const mapColors = (): React.ReactNode => {
         return gradientContainer.currentGradient.colors.map((color) => 
             <div key={color.id + "colorContainer" + gradientContainer.currentGradient.id} className="border-b mb-2">
@@ -61,7 +88,7 @@ export default function ColorPicker() {
                     key={color.id + "color" + gradientContainer.currentGradient.id} 
                     id={color.id.toString() + "color" + gradientContainer.currentGradient.id}  
                     name={color.id.toString() + "color" + gradientContainer.currentGradient.id}
-                    defaultValue={color.color}
+                    value={color.color}
                     onChange={modifyColors}
                 />
                 <label 
@@ -77,7 +104,7 @@ export default function ColorPicker() {
                     name={color.id.toString() + "colorAlpha" + gradientContainer.currentGradient.id}
                     min={0}
                     max={100}
-                    defaultValue={100}
+                    value={(parseInt(color.alpha, 16) / 255) * 100}
                     onChange={modifyColorsAlpha}>
                 </input>
             </div>
@@ -176,6 +203,67 @@ export default function ColorPicker() {
                 <button className="border-[2px] rounded-md px-[5px] shadow-md my-2" onClick={normalize}>
                     Normalize Starts/Stops
                 </button>
+                <label 
+                    htmlFor="allAlpha">
+                    Set All Alpha
+                </label>
+                <input 
+                    type="range" 
+                    name="allAlpha"
+                    id="allAlpha"
+                    min={0}
+                    max={100}
+                    value={(Math.max(...gradientContainer.currentGradient.colors.map(color => parseInt(color.alpha, 16))) / 255) * 100}
+                    onChange={entireGradientAlpha}>
+                </input>
+                <form onSubmit={addSpaceBetween}>
+                    <label 
+                        className="pr-[1rem]"
+                        htmlFor="spaceBetween">
+                        Add Space Between Stops:
+                    </label>
+                    <input 
+                        type="number" 
+                        name="spaceBetween"
+                        id="spaceBetween"
+                        min={0}
+                        max={100}
+                        defaultValue={0}>
+                    </input>
+                    <button type="submit" className="border-[2px] rounded-md px-[5px] shadow-md my-2">Add Space</button>
+                </form>
+                <form onSubmit={removeSpaceBetween}>
+                    <label 
+                        className="pr-[1rem]"
+                        htmlFor="spaceBetween">
+                        Reduce Space Between Stops:
+                    </label>
+                    <input 
+                        type="number" 
+                        name="spaceBetween"
+                        id="spaceBetween"
+                        min={0}
+                        max={100}
+                        defaultValue={0}>
+                    </input>
+                    <button type="submit" className="border-[2px] rounded-md px-[5px] shadow-md my-2">Reduce Space</button>
+                </form>
+                <form onSubmit={shiftStops}>
+                    <label 
+                        className="pr-[1rem]"
+                        htmlFor="spaceBetween">
+                        Shift All Stops:
+                    </label>
+                    <input 
+                        type="number" 
+                        name="spaceBetween"
+                        id="spaceBetween"
+                        min={-100}
+                        max={100}
+                        defaultValue={0}>
+                    </input>
+                    <button type="submit" className="border-[2px] rounded-md px-[5px] shadow-md my-2">Shift Stops</button>
+                </form>
                 <div>
                     <fieldset className="flex flex-row justify-between">
                         <div className="flex flex-col justify-around max-w-[33%]">

@@ -26,6 +26,13 @@ interface GradientContextType {
   changeCurrentGradient: (value: number) => void;
 
   normalizeStartStop: () => void;
+
+  setAllAlpha: (value: string) => void;
+
+  addSpaceBetweenStops: (value: number) => void;
+  shiftStops: (value: number) => void;
+
+  moveItem: (fromIndex: number, toIndex: number) => void;
 }
 
 export const GradientContext = createContext<GradientContextType>({} as GradientContextType);
@@ -314,8 +321,45 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
 
   const changeCurrentGradient = (value: number) => {
     setGradient(gradientArray.filter((item) => item.id === value)[0]);
-    setCurrentGradientInd(value);
+    setCurrentGradientInd(gradientArray.findIndex(gradient => gradient.id === value));
   }
+
+  const setAllAlpha = (value: string) => {
+    setGradient({...gradient, 
+      colors: gradient.colors.map((color) => 
+        ({...color, alpha: value})) 
+    })
+  }
+
+  const addSpaceBetweenStops = (value: number) => {
+    let newStartValues: {pos: number, id: number}[] = [{pos: gradient.startList[0].pos, id: gradient.startList[0].id}];
+    let newStopValues: {pos: number, id: number}[] = [];
+    for(let i = 0; i < gradient.startList.length - 1; i++){
+      newStartValues.push({pos: gradient.startList[i + 1].pos + (.5 * value), id: gradient.startList[i + 1].id})
+      newStopValues.push({pos: gradient.stopList[i].pos - (.5 * value), id: gradient.stopList[i].id})
+    }
+    newStopValues.push({pos: gradient.stopList[gradient.startList.length - 1].pos, id: gradient.stopList[gradient.startList.length - 1].id})
+    setGradient({...gradient, startList: newStartValues, stopList: newStopValues})
+  }
+
+  const shiftStops = (value: number) => {
+    let newStartValues: {pos: number, id: number}[] = [];
+    let newStopValues: {pos: number, id: number}[] = [];
+    for(let i = 0; i < gradient.startList.length; i++){
+      newStartValues.push({pos: gradient.startList[i].pos + value, id: gradient.startList[i].id})
+      newStopValues.push({pos: gradient.stopList[i].pos + value, id: gradient.stopList[i].id})
+    }
+    setGradient({...gradient, startList: newStartValues, stopList: newStopValues})
+  }
+
+  const moveItem = (fromIndex: number, toIndex: number) => {
+  setGradientArray((prevItems) => {
+    const newItems = [...prevItems];
+    const [movedItem] = newItems.splice(fromIndex, 1);
+    newItems.splice(toIndex, 0, movedItem);
+    return newItems;
+  });
+};
 
   const value: GradientContextType = {
     gradients: gradientArray,
@@ -342,6 +386,12 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
     changeCurrentGradient,
 
     normalizeStartStop,
+
+    setAllAlpha,
+
+    addSpaceBetweenStops,
+    shiftStops,
+    moveItem,
   }
 
   return (
