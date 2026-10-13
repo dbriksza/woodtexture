@@ -31,8 +31,6 @@ export default function GradientSelect() {
 
     const drop = () => {
 
-        console.log(draggingItem.current?.dataset.currentIndex, dragOverItem.current?.dataset.currentIndex)
-
         const from = parseInt(draggingItem.current?.dataset.currentIndex ?? "0");
 
         const to = parseInt(dragOverItem.current?.dataset.currentIndex ?? "0");
@@ -42,11 +40,6 @@ export default function GradientSelect() {
         draggingItem.current = null;
         dragOverItem.current = null;
     }
-
-    useEffect(() => {
-        gradientContainerDiv.current!.dataset.value = (gradientContainer.gradients.length - 1).toString();
-        gradientContainer.changeCurrentGradient(gradientContainer.gradients.length - 1);
-    }, [gradientContainer.gradients.length])
 
     const isCurrent = (value: number) => {
         return gradientContainer.currentGradient.id === value;

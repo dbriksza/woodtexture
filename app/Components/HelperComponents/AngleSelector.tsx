@@ -138,7 +138,7 @@ const AngleSelector: React.FC<AngleSelectorProps> = (({sendData, id, startorstop
                     <line ref={lineRef} x1="100" y1="100" x2={xy.x} y2={xy.y} stroke="red" strokeWidth="2" data-value={value}/>
                 </svg>
                 <label className="absolute bottom-[105%] left-[calc(50%-10px)] w-[100px] mb-[-.4em]">
-                    <input type="radio" name="angle" value="up" onChange={changeDirectionRadio} defaultChecked/> Up
+                    <input type="radio" name="angle" value="up" onChange={changeDirectionRadio}/> Up
                 </label>
                 <label className="absolute left-[105%] top-[calc(50%-10px)] h-[10px]">
                     <input type="radio" name="angle" value="right" onChange={changeDirectionRadio}/> Right

@@ -18,13 +18,13 @@ export default function GradientTypeSelect() {
             <fieldset className="flex flex-col min-w-[100px]">
                 <p>Select Gradient Type:</p>
                 <label>
-                    <input type="radio" name="gradientType" value="linear" onChange={changeGradientType} defaultChecked/> Linear
+                    <input type="radio" name="gradientType" value="linear" onChange={changeGradientType} checked={gradientContainer.currentGradient.type === "linear"}/> Linear
                 </label>
                 <label>
-                    <input type="radio" name="gradientType" value="radial" onChange={changeGradientType}/> Radial
+                    <input type="radio" name="gradientType" value="radial" onChange={changeGradientType} checked={gradientContainer.currentGradient.type === "radial"}/> Radial
                 </label>
                 <label>
-                    <input type="radio" name="gradientType" value="conic" onChange={changeGradientType}/> Conic
+                    <input type="radio" name="gradientType" value="conic" onChange={changeGradientType} checked={gradientContainer.currentGradient.type === "conic"}/> Conic
                 </label>
             </fieldset>
             <div className="min-w-[300px]">

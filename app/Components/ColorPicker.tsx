@@ -281,19 +281,19 @@ export default function ColorPicker() {
                 <fieldset className="my-2">
                     <p>Units: </p>
                     <label className="mr-4">
-                        <input type="radio" name="unit" value="%" onChange={changeUnit} defaultChecked/> Percent
+                        <input type="radio" name="unit" value="%" onChange={changeUnit} checked={gradientContainer.currentGradient.units === "%"}/> Percent
                     </label>
                     <label>
-                        <input type="radio" name="unit" value="px" onChange={changeUnit} /> px
+                        <input type="radio" name="unit" value="px" onChange={changeUnit} checked={gradientContainer.currentGradient.units === "px"}/> px
                     </label>
                 </fieldset>
                 <fieldset className="my-2">
                     <p>Repeating: </p>
                     <label className="mr-4">
-                        <input type="radio" name="repeat" value="true" onChange={changeRepeating} /> Repeating
+                        <input type="radio" name="repeat" value="true" onChange={changeRepeating} checked={gradientContainer.currentGradient.repeating}/> Repeating
                     </label>
                     <label>
-                        <input type="radio" name="repeat" value="false" onChange={changeRepeating} defaultChecked/> Non-Repeating
+                        <input type="radio" name="repeat" value="false" onChange={changeRepeating} checked={!gradientContainer.currentGradient.repeating}/> Non-Repeating
                     </label>
                 </fieldset>
                 <div>

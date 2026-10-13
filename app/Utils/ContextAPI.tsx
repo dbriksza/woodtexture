@@ -86,7 +86,7 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
           } else {
             constructedStyle.push(grad.size + " ")
           }
-          constructedStyle.push("at " + grad.position.x + grad.units + " " + grad.position.y + gradient.units + " ");
+          constructedStyle.push("at " + grad.position.x + grad.units + " " + grad.position.y + grad.units + " ");
           // constructedStyle.push(gradient.size + " ");
           break;
         case "conic":
@@ -100,8 +100,8 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
 
       for(let i = 0; i < grad.colors.length; i++){
           colorsAndStops.push(grad.colors[i].color + grad.colors[i].alpha + " ");
-          colorsAndStops.push(grad.startList[i].pos + (grad.type === "conic" ? "rad " : gradient.units + " "));
-          colorsAndStops.push(grad.stopList[i].pos + (grad.type === "conic" ? "rad " : gradient.units + " "));
+          colorsAndStops.push(grad.startList[i].pos + (grad.type === "conic" ? "rad " : grad.units + " "));
+          colorsAndStops.push(grad.stopList[i].pos + (grad.type === "conic" ? "rad " : grad.units + " "));
           colorsAndStops.push(", ");
       };
 
@@ -124,8 +124,8 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
 
   const updateGradientArray = () => {
     setGradientArray([
-      ...gradientArray.map((grad, i) => 
-        i === currentGradientInd ? 
+      ...gradientArray.map((grad, index) => 
+        index === currentGradientInd ? 
       {...grad, ...gradient} : 
       grad)
     ]);
@@ -138,6 +138,10 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     styleCompiler();
   }, [gradientArray])
+
+  useEffect(() => {
+    setGradient(gradientArray[currentGradientInd])
+  }, [currentGradientInd]);
 
   const normalizeAngle = (angle: number) => {
     if (angle < 0) {
@@ -320,8 +324,8 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
   const addGradient = () => {
     updateGradientArray();
     setGradientArray([...gradientArray, {...baseGradient, id: gradientArray.length}]);
-    changeCurrentGradient(gradientArray.length - 1)
-    setCurrentGradientInd(gradientArray.length - 1);
+    //dangerous
+    setCurrentGradientInd(gradientArray.length)
   }
 
   const changeCurrentGradient = (value: number) => {
@@ -364,6 +368,7 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
       newItems.splice(toIndex, 0, movedItem);
       return newItems;
     });
+    setCurrentGradientInd(toIndex);
   };
 
   const changeUnits = (value: string) => {

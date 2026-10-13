@@ -7,7 +7,7 @@ export default function FaviconUpdater() {
 
   const gradientContainer = use(GradientContext);
 
-  const [faviconUrl, setFaviconUrl] = useState<string | null>(null);
+  const [faviconUrl, setFaviconUrl] = useState<string | null>("data:image/svg+xml;base64,CiAgICAgIDxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgICAgIDxzdHlsZT4KICAgICAgICAgICAgLnN0eWxlZCB7CiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kOiBsaW5lYXItZ3JhZGllbnQoMHJhZCBpbiBzcmdiLCAjZjU4MjI0ZmYgMCUgMTAlICk7CiAgICAgICAgICAgICAgICBsaW5lLWhlaWdodDogMzJweDsKICAgICAgICAgICAgICAgIHRleHQtYWxpZ246IGNlbnRlcjsKICAgICAgICAgICAgICAgIGZvbnQtc2l6ZTogMjRweDsKICAgICAgICAgICAgfQogICAgICA8L3N0eWxlPgogICAgICAgIDxmb3JlaWduT2JqZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiI+CiAgICAgICAgICAgIDxkaXYgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiIGNsYXNzPSJzdHlsZWQiIHdpZHRoPSIzMiIgaGVpZ2h0ID0gIjMyIj4KICAgICAgICAgICAgRwogICAgICAgICAgICA8L2Rpdj4KICAgICAgICA8L2ZvcmVpZ25PYmplY3Q+CiAgICAgIDwvc3ZnPgogICAg");
 
   useEffect(() => {
     // Create the SVG for the favicon with the primary color
@@ -28,9 +28,7 @@ export default function FaviconUpdater() {
         </foreignObject>
       </svg>
     `;
-    console.log(svg)
     const newBackground = `data:image/svg+xml;base64,${btoa(svg)}`; // Convert the SVG to a base64 string
-    console.log(newBackground)
     setFaviconUrl(newBackground); // Set the favicon URL
 
     // Update the link tag in the HTML to use the new favicon
