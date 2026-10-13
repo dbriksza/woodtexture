@@ -3,6 +3,7 @@ import GradientSelect from "./Components/GradientSelect";
 import StyleDisplay from "./Components/StyleDisplay";
 import InterpolationEditor from "./Components/InterpolationEditor";
 import GradientTypeSelect from "./Components/GradientTypeSelect";
+import FaviconUpdater from "./Utils/FaviconUpdater";
 import { GradientProvider } from "./Utils/ContextAPI";
 
 export default function Home() {
@@ -10,6 +11,7 @@ export default function Home() {
     <div className="flex flex-col bg-zinc-50 font-sans dark:bg-black w-full h-full pt-4">
       <main>
         <GradientProvider>
+          <FaviconUpdater/>
           <div className="flex flex-row justify-around">
             <GradientSelect/>
             <ColorPicker/>

@@ -33,6 +33,10 @@ interface GradientContextType {
   shiftStops: (value: number) => void;
 
   moveItem: (fromIndex: number, toIndex: number) => void;
+
+  changeUnits: (value: string) => void;
+
+  updateRepeating: (value: boolean) => void;
 }
 
 export const GradientContext = createContext<GradientContextType>({} as GradientContextType);
@@ -51,7 +55,8 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
     interpolationMethod: "in srgb",
     repeating: false,
     startList: [{pos: 0, id: 0}],
-    stopList: [{pos: 10, id: 0}]
+    stopList: [{pos: 10, id: 0}],
+    units: "%"
   }
 
   const [gradient, setGradient] = useState<Gradient>(baseGradient);
@@ -70,23 +75,23 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
 
       switch(grad.type){
         case "linear":
-            constructedStyle.push("linear-gradient(");
-            constructedStyle.push(grad.angle + "rad ");
-            break;
-          case "radial":
-            constructedStyle.push("radial-gradient(");
-            constructedStyle.push(grad.shape + " ");
-            if(grad.shape === "ellipse"){
-              constructedStyle.push(grad.shapeSize.x + "% " + grad.shapeSize.y + "% " );
-            } else {
-              constructedStyle.push(grad.size + " ")
-            }
-            constructedStyle.push("at " + grad.position.x + "% " + grad.position.y + "% ");
-            // constructedStyle.push(gradient.size + " ");
-            break;
-          case "conic":
-            constructedStyle.push("conic-gradient(");
-            break;
+          constructedStyle.push(gradient.repeating ? "repeating-linear-gradient(": "linear-gradient(");
+          constructedStyle.push(grad.angle + "rad ");
+          break;
+        case "radial":
+          constructedStyle.push(gradient.repeating ? "repeating-radial-gradient(" : "radial-gradient(");
+          constructedStyle.push(grad.shape + " ");
+          if(grad.shape === "ellipse"){
+            constructedStyle.push(grad.shapeSize.x + gradient.units + " " + grad.shapeSize.y + gradient.units + " " );
+          } else {
+            constructedStyle.push(grad.size + " ")
+          }
+          constructedStyle.push("at " + grad.position.x + gradient.units + " " + grad.position.y + gradient.units + " ");
+          // constructedStyle.push(gradient.size + " ");
+          break;
+        case "conic":
+          constructedStyle.push(gradient.repeating ? "repeating-conic-gradient(" : "conic-gradient(");
+          break;
       };
 
       constructedStyle.push(grad.interpolationMethod + ", ");
@@ -95,8 +100,8 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
 
       for(let i = 0; i < grad.colors.length; i++){
           colorsAndStops.push(grad.colors[i].color + grad.colors[i].alpha + " ");
-          colorsAndStops.push(grad.startList[i].pos + (grad.type === "conic" ? "rad " : "% "));
-          colorsAndStops.push(grad.stopList[i].pos + (grad.type === "conic" ? "rad " : "% "));
+          colorsAndStops.push(grad.startList[i].pos + (grad.type === "conic" ? "rad " : gradient.units + " "));
+          colorsAndStops.push(grad.stopList[i].pos + (grad.type === "conic" ? "rad " : gradient.units + " "));
           colorsAndStops.push(", ");
       };
 
@@ -353,13 +358,21 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const moveItem = (fromIndex: number, toIndex: number) => {
-  setGradientArray((prevItems) => {
-    const newItems = [...prevItems];
-    const [movedItem] = newItems.splice(fromIndex, 1);
-    newItems.splice(toIndex, 0, movedItem);
-    return newItems;
-  });
-};
+    setGradientArray((prevItems) => {
+      const newItems = [...prevItems];
+      const [movedItem] = newItems.splice(fromIndex, 1);
+      newItems.splice(toIndex, 0, movedItem);
+      return newItems;
+    });
+  };
+
+  const changeUnits = (value: string) => {
+    setGradient({...gradient, units: value});
+  }
+
+  const updateRepeating = (value: boolean) => {
+    setGradient({...gradient, repeating: value});
+  }
 
   const value: GradientContextType = {
     gradients: gradientArray,
@@ -392,6 +405,8 @@ export const GradientProvider = ({ children }: { children: ReactNode }) => {
     addSpaceBetweenStops,
     shiftStops,
     moveItem,
+    changeUnits,
+    updateRepeating,
   }
 
   return (

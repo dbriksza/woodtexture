@@ -11,6 +11,7 @@ interface Gradient {
     repeating: boolean;
     stopList: {pos: number, id: number}[];
     startList: {pos: number, id: number}[];
+    units: string;
 }
 
 interface Color {

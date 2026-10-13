@@ -74,6 +74,14 @@ export default function ColorPicker() {
         gradientContainer.shiftStops(parseInt(space as string))
     }
 
+    const changeUnit = (event: React.ChangeEvent<HTMLInputElement>) => {
+        gradientContainer.changeUnits(event.currentTarget.value);
+    }
+
+    const changeRepeating = (event: React.ChangeEvent<HTMLInputElement>) => {
+        gradientContainer.updateRepeating(JSON.parse(event.currentTarget.value));
+    }
+
     const mapColors = (): React.ReactNode => {
         return gradientContainer.currentGradient.colors.map((color) => 
             <div key={color.id + "colorContainer" + gradientContainer.currentGradient.id} className="mb-2 before:absolute before:right-[-300px] before:border-b">
@@ -270,6 +278,24 @@ export default function ColorPicker() {
                         <ToolTip helpText="Shifts all stops. Use negative values for the opposite direction."></ToolTip>
                     </button>
                 </form>
+                <fieldset className="my-2">
+                    <p>Units: </p>
+                    <label className="mr-4">
+                        <input type="radio" name="unit" value="%" onChange={changeUnit} defaultChecked/> Percent
+                    </label>
+                    <label>
+                        <input type="radio" name="unit" value="px" onChange={changeUnit} /> px
+                    </label>
+                </fieldset>
+                <fieldset className="my-2">
+                    <p>Repeating: </p>
+                    <label className="mr-4">
+                        <input type="radio" name="repeat" value="true" onChange={changeRepeating} /> Repeating
+                    </label>
+                    <label>
+                        <input type="radio" name="repeat" value="false" onChange={changeRepeating} defaultChecked/> Non-Repeating
+                    </label>
+                </fieldset>
                 <div>
                     <fieldset className="flex flex-row justify-between">
                         <div className="flex flex-col justify-around max-w-[33%]">
