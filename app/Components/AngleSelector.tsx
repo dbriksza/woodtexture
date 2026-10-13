@@ -35,18 +35,22 @@ const AngleSelector: React.FC<AngleSelectorProps> = (({sendData, id, startorstop
             case "up":
                 setXY({x: 100, y: 0})
                 setAngle(2 * (Math.PI));
+                sendData(2 * (Math.PI), parseInt(id!), startorstop!);
                 break;
             case "right":
                 setXY({x: 200, y: 100})
                 setAngle(.5 * (Math.PI));
+                sendData(.5 * (Math.PI), parseInt(id!), startorstop!);
                 break;
             case "down":
                 setXY({x: 100, y: 200})
                 setAngle(1 * (Math.PI));
+                sendData(1 * (Math.PI), parseInt(id!), startorstop!);
                 break;
             case "left":
                 setXY({x: 0, y: 100})
                 setAngle(1.5 * (Math.PI));
+                sendData(1.5 * (Math.PI), parseInt(id!), startorstop!);
                 break;
             case "custom":
                 break;
@@ -96,7 +100,7 @@ const AngleSelector: React.FC<AngleSelectorProps> = (({sendData, id, startorstop
         let truth = (timer && mouseDown);
         changeDirectionCircle(event, truth);
     }
-    
+
     //TODO: find out the correct way to do this
     useEffect(() => {
         if(mouseDown){
