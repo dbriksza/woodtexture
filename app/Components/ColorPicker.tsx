@@ -145,7 +145,7 @@ export default function ColorPicker() {
                     <AngleSelector 
                         key={start.id + "start" + gradientContainer.currentGradient.id}
                         sendData={handleData}
-                        id={start.id.toString() + gradientContainer.currentGradient.id}
+                        id={start.id.toString() + "angle" + gradientContainer.currentGradient.id}
                         startorstop="start"
                         value={start.pos}
                     >
@@ -185,7 +185,7 @@ export default function ColorPicker() {
                     <AngleSelector 
                         key={stop.id + "stop" + gradientContainer.currentGradient.id}
                         sendData={handleData}
-                        id={stop.id.toString() + gradientContainer.currentGradient.id}
+                        id={stop.id.toString() + "angle" + gradientContainer.currentGradient.id}
                         startorstop="stop"
                         value={stop.pos}
                     >

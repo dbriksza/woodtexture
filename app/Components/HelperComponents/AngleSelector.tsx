@@ -131,7 +131,7 @@ const AngleSelector: React.FC<AngleSelectorProps> = (({sendData, id, startorstop
     }, [lineRef.current?.dataset.value])
 
     return (
-        <div className="pt-[2rem] px-[4ch] flex flex-col max-w-[calc[100%-9ch]]">
+        <div className="pt-[2rem] px-[4ch] flex flex-col max-w-[calc[100%-9ch]]" id={id}>
             <fieldset ref={boxRef} className="relative min-w-[100px] min-h-[100px] mb-[2rem]">
                 <svg viewBox="50 50 100 100" xmlns="http://www.w3.org/2000/svg" onMouseDown={mosueDownEvent} onMouseUp={mosueUpEvent} onMouseLeave={mosueUpEvent} onMouseMove={mosueMoveEvent}>
                     <circle cx="100" cy="100" r="50" />
